@@ -43,6 +43,7 @@ class god_renderer extends wf_agg {
 	
 	private function get_template() {
 		$buf = NULL;
+
 		foreach($this->_core_html->managed_list as $val) {
 			$data = null;
 
@@ -73,6 +74,9 @@ class god_renderer extends wf_agg {
 			$tpl->add_element($fs1);
 		
 			$tpl->tpl_name = $val[0];
+
+			/* chargement des variables */
+			$tpl->tpl_values = $val[1]->get_vars();
 
 			$buf .= $tpl->render('god/tpl_edit', TRUE);
 		}

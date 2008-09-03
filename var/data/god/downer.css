@@ -34,24 +34,9 @@
 }
 
 /* 
- * Edit template
+ * Edit template text
  */
-
-.god_edit_tpl {
-	background: #a10e09;
-	color: #ffffff;
-	border: 1px dashed #b2b2b2;
-	padding: 10px;
-}
-
-.god_edit_tpl_title {
-	background: #e5e5e5;
-	color: #a10e09;
-	font-weight: bold;
-	padding: 5px;
-}
-
-
+ 
 .god_edit_tpl_text {
 	font-weight: normal;
 	padding: 5px;
@@ -66,3 +51,17 @@
 	padding: 5px;
 }
 
+/* 
+ * Show template value
+ */
+.god_edit_tpl_value_title {
+	font-weight: bold;
+	padding: 5px;
+	background: #4c4c4c;
+}
+
+.god_edit_tpl_value {
+	padding-right: 5px;
+	background: #ffffff;
+	color: #000000;
+}
