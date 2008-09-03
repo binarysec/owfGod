@@ -1,4 +1,4 @@
-{css "/data/core/god.css"}
+{css "/data/god/downer.css"}
 <div class="god">
 <div class="god_title">God edition</div>
 
