@@ -48,29 +48,39 @@ class god_renderer extends wf_agg {
 
 			if(file_exists($val[1]->get_file()))
 				$data = file_get_contents($val[1]->get_file());
-	
+			
 			/* edit template */
 			$tpl = new core_form($this->wf, "god_edit_tpl");
+			$tpl->method = "post";
+			$tpl->action = $this->wf->linker("/god/edit/tpl");
+			
+			$fa1 = new core_form_hidden('back_url');
+			$fa1->value = base64_encode($_SERVER["REQUEST_URI"]);
+			$tpl->add_element($fa1);
+			
+			$fa1 = new core_form_hidden('tpl_name');
+			$fa1->value = $val[0];
+			$tpl->add_element($fa1);
 			
 			$fa1 = new core_form_textarea('text');
 			$fa1->value = $data;
+			$fa1->class = 'god_edit_tpl_text';
 			$tpl->add_element($fa1);
 		
 			$fs1 = new core_form_submit('submit');
 			$fs1->value = 'Enregistrer';
+			$fs1->class = 'god_edit_tpl_submit';
 			$tpl->add_element($fs1);
 		
 			$tpl->tpl_name = $val[0];
-			
-// 			foreach($this->_core_lang->get_list() as $k => $v) {
-// 			
-// 			}
-			
+
 			$buf .= $tpl->render('god/tpl_edit', TRUE);
 		}
 
 		return($buf);
 	}
+	
+
 	
 	
 	
