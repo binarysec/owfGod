@@ -76,7 +76,10 @@ class god_renderer extends wf_agg {
 			$tpl->tpl_name = $val[0];
 
 			/* chargement des variables */
-			$tpl->tpl_values = $val[1]->get_vars();
+			$vars = $val[1]->get_vars();
+			foreach($vars as $name => $value)
+				if(is_string($value)) $vars[$name] = htmlentities($value);
+			$tpl->tpl_values = $vars;
 
 			$buf .= $tpl->render('god/tpl_edit', TRUE);
 		}
