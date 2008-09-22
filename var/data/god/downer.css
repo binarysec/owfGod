@@ -4,33 +4,55 @@
 	padding-left: 10px;
 	padding-right: 10px;
 	
-	background: #000000;
-	color: #ffffff;
+	background: #ffffff;
+	color: #000000;
 	font-weight: normal;
 	text-decoration: none;
 	font-family: Arial, sans-serif; 
 }
 
 .god_title {
+	
 	font-size: 14pt;
 	font-weight: bold;
 	padding-bottom: 5px;
 }
 
-.god_annonce {	
+.god_annonce {
 	font-size: 7pt;
-	background: #4c4c4c;
-	color: #ffffff;
+	background: #ffffff;
+	color: #000000;
 	font-weight: bold;
-	padding: 2px;
+	padding: 5px;
+	border-top: 1px dotted #000000;
+	border-left: 1px solid #000000;
 }
 
 .god_annonce_cadre {
 	padding: 5px;
-	background: #191919;
-	border-bottom: 1px solid #4c4c4c;
-	border-left: 1px solid #4c4c4c;
-	border-right: 1px solid #4c4c4c;
+	background: #ffffff;
+	color: #000000;
+	border-left: 1px dotted #000000;
+}
+
+/* 
+ * Lang template text
+ */
+.god_lang_annonce {
+	font-size: 7pt;
+	background: #ffffff;
+	color: #000000;
+	font-weight: bold;
+	padding: 5px;
+/* 	border-top: 1px dotted #000000; */
+/* 	border-left: 1px solid #000000; */
+}
+
+.god_lang_annonce_cadre {
+	padding: 5px;
+	background: #ffffff;
+	color: #000000;
+	border-left: 1px dotted #000000;
 }
 
 /* 
