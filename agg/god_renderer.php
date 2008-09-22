@@ -36,9 +36,67 @@ class god_renderer extends wf_agg {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function get_content() {
 		$tpl = new core_tpl($this->wf);
-		$tpl->set('tpl_edit', $this->get_template());
+// 		$tpl->set('tpl_edit', $this->get_template());
+// 		$tpl->set('tpl_lang', $this->get_lang());
 		
 		return($tpl->fetch('god/body', TRUE));
+	}
+	
+	private function get_lang() {
+// 		echo "<pre>";
+// // 		var_dump($this->_core_lang->contexts);
+// // 		exit(0);
+// 		
+// 		
+// 		
+// 		
+// 		
+// 		$buf = NULL;
+// 		
+// 		$list_lang = $this->_core_lang->get_list();
+// 		
+// 
+// 		
+// 		foreach($this->_core_lang->contexts as $path => $obj) {
+// 			$tpl = new core_tpl($this->wf);
+// 			
+// 			foreach($list_lang as $lang) {
+// 				$context = $this->_core_lang->get_context(
+// 					$obj->full,
+// 					$lang,
+// 					FALSE
+// 				);
+// 				if($context == NULL)
+// 					$context = $obj;
+// 					
+// 				
+// 				/* lecture des clés de la souche */
+// 				
+// 				foreach($obj->keys as $k => $v) {
+// 					
+// 				}
+// 			}
+// 			
+// 			
+// 			
+// 			$tpl = new core_form($this->wf, "god_edit_lang");
+// // 			$tpl->method = "post";
+// // 			$tpl->action = $this->wf->linker("/god/edit/lang");
+// // 			
+// // 			$fa1 = new core_form_hidden('back_url');
+// // 			$fa1->value = base64_encode($_SERVER["REQUEST_URI"]);
+// // 			$tpl->add_element($fa1);
+// // 			
+// // 			$fa1 = new core_form_hidden('lang_full');
+// // 			$fa1->value = $obj->full;
+// // 			$tpl->add_element($fa1);
+// // 		
+// // 	
+// 			$buf .= $tpl->render('god/tpl_lang', TRUE);
+// 		}
+// 		
+// 
+// 		return($buf);
 	}
 	
 	private function get_template() {
