@@ -1,13 +1,5 @@
-<div class="god_annonce">Editing : {$tpl_name}</div>
+<h1>Editing template {$tpl_name}</h1>
 
-<div class="god_annonce_cadre">
-
-<div class="god_annonce">Language translation</div>
-<div class="god_annonce_cadre">
-</div>
-
-<div class="god_annonce">Content</div>
-<div class="god_annonce_cadre">
 <form{$form_attribs_string}>
 	{foreach $form_hidden_elements as $id => $element}
 		{$element->render()}
@@ -17,18 +9,20 @@
 		{$element->render()}<br />
 	{/foreach}
 </form>
-</div>
-
 
 
 {if $tpl_values}
-<div class="god_annonce">Known values for this template</div>
-<div class="god_annonce_cadre">
+<hr size="2">
+<h1>Known values for this template</h1>
+
 <table width="100%">
+	<thead>
 	<tr>
 		<td class="god_edit_tpl_value_title">Value (key)</td>
 		<td class="god_edit_tpl_value_title">Description (content)</td>
 	</tr>
+	</thead>
+	<tbody>
 	{foreach $tpl_values as $name => $v}
 		<tr>
 			<td class="god_edit_tpl_value">{$name} ({$v|type})</td>
@@ -49,8 +43,7 @@
 		{/if}
 		</tr>
 	{/foreach}
+	</tbody>
 </table>
-</div>
 {/if}
 
-</div>
