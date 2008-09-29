@@ -8,71 +8,96 @@
 	color: #000000;
 	font-weight: normal;
 	text-decoration: none;
-	font-family: Arial, sans-serif; 
+	font-family: Arial, sans-serif;
+	border-collapse: collapse;
 }
 
 .god_title {
-	
 	font-size: 14pt;
 	font-weight: bold;
 	padding-bottom: 5px;
 }
 
 .god_annonce {
-	font-size: 7pt;
+	font-size: 14pt;
 	background: #ffffff;
 	color: #000000;
 	font-weight: bold;
 	padding: 5px;
-	border-top: 1px dotted #000000;
-	border-left: 1px solid #000000;
+	border-collapse: collapse;
+	border: 1px solid #000000;
 }
 
 .god_annonce_cadre {
 	padding: 5px;
 	background: #ffffff;
 	color: #000000;
-	border-left: 1px dotted #000000;
+	border-collapse: collapse;
+	border-bottom: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-right: 1px solid #000000;
+	
 }
 
-/* 
- * Lang template text
- */
-.god_lang_annonce {
-	font-size: 7pt;
-	background: #ffffff;
-	color: #000000;
-	font-weight: bold;
-	padding: 5px;
-/* 	border-top: 1px dotted #000000; */
-/* 	border-left: 1px solid #000000; */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Lang edition
+ * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.god_lang h1 {
+	font-size: 12px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
-.god_lang_annonce_cadre {
-	padding: 5px;
-	background: #ffffff;
-	color: #000000;
-	border-left: 1px dotted #000000;
+table.god_lang_table {
+	border: 1px solid #000000;
+	border-collapse: collapse;
+	width: 100%;
 }
 
-/* 
- * Edit template text
- */
- 
-.god_edit_tpl_text {
+table.god_lang_table thead {
+	border: 1px solid #000000;
+	border-collapse: collapse;
+	background-color: #a10e09;
+	color: #FFFFFF;
+}
+
+table.god_lang_table th {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 11px;
+	border-collapse: collapse;
+}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Template edition
+ * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.god_tpl h1 {
+	font-size: 12px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.god_tpl textarea {
 	font-size: 6pt;
 	font-weight: normal;
 	padding: 5px;
-	width: 800px;
+	width: 98%;
 	height: 170px;
 	border: 0px;
+	padding-bottom: 5px;
+	border: 1px solid #000000;
 }
 
-.god_edit_tpl_submit {
+.god_tpl input {
 	font-size: 6pt;
 	font-weight: bold;
 	padding: 5px;
-	border: 1px;
+	margin: 5px;
+	border: 1px solid #000000;
+	
 }
 
 /* 

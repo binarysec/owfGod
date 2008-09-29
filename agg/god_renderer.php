@@ -23,11 +23,15 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 class god_renderer extends wf_agg {
-	var $_core_lang;
+	private $_core_lang;
+	
 	public function loader($wf) {
 		$this->wf = $wf;
 		$this->_core_html = $wf->core_html();
 		$this->_core_lang = $wf->core_lang();
+		
+		/* just load forms */
+		$this->wf->autoloader("core_form");
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -36,67 +40,104 @@ class god_renderer extends wf_agg {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function get_content() {
 		$tpl = new core_tpl($this->wf);
-// 		$tpl->set('tpl_edit', $this->get_template());
-// 		$tpl->set('tpl_lang', $this->get_lang());
+		$tpl->set('tpl_edit', $this->get_template());
+		$tpl->set('tpl_lang', $this->get_lang());
 		
 		return($tpl->fetch('god/body', TRUE));
 	}
+
 	
 	private function get_lang() {
-// 		echo "<pre>";
-// // 		var_dump($this->_core_lang->contexts);
-// // 		exit(0);
-// 		
-// 		
-// 		
-// 		
-// 		
-// 		$buf = NULL;
-// 		
-// 		$list_lang = $this->_core_lang->get_list();
-// 		
-// 
-// 		
-// 		foreach($this->_core_lang->contexts as $path => $obj) {
-// 			$tpl = new core_tpl($this->wf);
+		$buf = NULL;
+		
+		$list_lang = $this->_core_lang->get_list();
+
+		foreach($this->_core_lang->contexts as $path => $obj) {
+
+			
+			if(count($obj->keys) > 0) {
+				$ss = new core_spreadsheet(array(
+					"class" => "god_lang_table"
+				));
+				$ss->allow_head();
+				
+				$row = 0;
+				$col = 0;
+				
+				$ss->set(
+					$row,
+					$col,
+					"Base key"
+				);
+				
+				$tpl = new core_tpl($this->wf);
+				
+				/* there are keys into the master device lets 
+				   draw the first col */
+				$row = 1;
+				foreach($obj->keys as $v) {
+					$ss->set(
+						$row,
+						$col,
+						$v
+					);
+					$row++;
+				}
+				$col++;
+				
+				foreach($list_lang as $lang => $on) {
+					$context = $this->_core_lang->get_context(
+						$obj->full,
+						$lang
+					);
+					if($context == NULL)
+						$context = &$obj;
+				
+					/* reading keys */
+					$row = 0;
+					$linfo = $this->_core_lang->resolv($lang);
+					$ss->set(
+						$row,
+						$col,
+						$linfo["name"]
+					);
+				
+					$row = 1;
+					foreach($obj->keys as $key => $v) {
+						$cft = new core_form_text(0);
+						$cft->name = "lang[$lang][$key]";
+						$cft->value = $v;
+						$cft->size = 25;
+
+						$ss->set(
+							$row,
+							$col,
+							$cft->render()
+						);
+						$row++;
+					}
+					$col++;
+				}
+
+// 			$tpl->method = "post";
+// 			$tpl->action = $this->wf->linker("/god/edit/lang");
 // 			
-// 			foreach($list_lang as $lang) {
-// 				$context = $this->_core_lang->get_context(
-// 					$obj->full,
-// 					$lang,
-// 					FALSE
-// 				);
-// 				if($context == NULL)
-// 					$context = $obj;
-// 					
-// 				
-// 				/* lecture des clés de la souche */
-// 				
-// 				foreach($obj->keys as $k => $v) {
-// 					
-// 				}
-// 			}
+// 			$fa1 = new core_form_hidden('back_url');
+// 			$fa1->value = base64_encode($_SERVER["REQUEST_URI"]);
+// 			$tpl->add_element($fa1);
 // 			
-// 			
-// 			
-// 			$tpl = new core_form($this->wf, "god_edit_lang");
-// // 			$tpl->method = "post";
-// // 			$tpl->action = $this->wf->linker("/god/edit/lang");
-// // 			
-// // 			$fa1 = new core_form_hidden('back_url');
-// // 			$fa1->value = base64_encode($_SERVER["REQUEST_URI"]);
-// // 			$tpl->add_element($fa1);
-// // 			
-// // 			$fa1 = new core_form_hidden('lang_full');
-// // 			$fa1->value = $obj->full;
-// // 			$tpl->add_element($fa1);
-// // 		
-// // 	
-// 			$buf .= $tpl->render('god/tpl_lang', TRUE);
-// 		}
-// 		
-// 
-// 		return($buf);
+// 			$fa1 = new core_form_hidden('lang_full');
+// 			$fa1->value = $obj->full;
+// 			$tpl->add_element($fa1);
+
+				$tpl->set("path_name", $obj->full);
+				$tpl->set("dataset", $ss->renderer());
+				
+				$buf .= $tpl->fetch('god/tpl_lang', TRUE);
+			}
+		}
+		
+		return($buf);
 	}
 	
 	private function get_template() {
@@ -123,12 +164,10 @@ class god_renderer extends wf_agg {
 			
 			$fa1 = new core_form_textarea('text');
 			$fa1->value = $data;
-			$fa1->class = 'god_edit_tpl_text';
 			$tpl->add_element($fa1);
 		
 			$fs1 = new core_form_submit('submit');
 			$fs1->value = 'Enregistrer';
-			$fs1->class = 'god_edit_tpl_submit';
 			$tpl->add_element($fs1);
 		
 			$tpl->tpl_name = $val[0];
