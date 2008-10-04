@@ -53,8 +53,6 @@ class god_renderer extends wf_agg {
 		$list_lang = $this->_core_lang->get_list();
 
 		foreach($this->_core_lang->contexts as $path => $obj) {
-
-			
 			if(count($obj->keys) > 0) {
 				$ss = new core_spreadsheet(array(
 					"class" => "god_lang_table"
@@ -90,7 +88,8 @@ class god_renderer extends wf_agg {
 						$obj->full,
 						$lang
 					);
-					if($context == NULL)
+
+					if(!$context)
 						$context = &$obj;
 				
 					/* reading keys */
@@ -106,7 +105,10 @@ class god_renderer extends wf_agg {
 					foreach($obj->keys as $key => $v) {
 						$cft = new core_form_text(0);
 						$cft->name = "lang[$lang][$key]";
-						$cft->value = $v;
+						if($context->get($key))
+							$cft->value = $context->get($key);
+						else
+							$cft->value = $v;
 						$cft->size = 25;
 
 						$ss->set(
@@ -119,21 +121,13 @@ class god_renderer extends wf_agg {
 					$col++;
 				}
 
-// 			$tpl->method = "post";
-// 			$tpl->action = $this->wf->linker("/god/edit/lang");
-// 			
-// 			$fa1 = new core_form_hidden('back_url');
-// 			$fa1->value = base64_encode($_SERVER["REQUEST_URI"]);
-// 			$tpl->add_element($fa1);
-// 			
-// 			$fa1 = new core_form_hidden('lang_full');
-// 			$fa1->value = $obj->full;
-// 			$tpl->add_element($fa1);
-
+				$tpl->set("action", $this->wf->linker("/god/edit/lang"));
 				$tpl->set("path_name", $obj->full);
+				$tpl->set("backurl", base64_encode($_SERVER["REQUEST_URI"]));
+
 				$tpl->set("dataset", $ss->renderer());
 				
-				$buf .= $tpl->fetch('god/tpl_lang', TRUE);
+				$buf .= $tpl->fetch('god/lang_edit', TRUE);
 			}
 		}
 		
@@ -141,45 +135,18 @@ class god_renderer extends wf_agg {
 	}
 	
 	private function get_template() {
-		$buf = NULL;
-
+		$list = array();
 		foreach($this->_core_html->managed_list as $val) {
-			$data = null;
-
-			if(file_exists($val[1]->get_file()))
-				$data = file_get_contents($val[1]->get_file());
-			
-			/* edit template */
-			$tpl = new core_form($this->wf, "god_edit_tpl");
-			$tpl->method = "post";
-			$tpl->action = $this->wf->linker("/god/edit/tpl");
-			
-			$fa1 = new core_form_hidden('back_url');
-			$fa1->value = base64_encode($_SERVER["REQUEST_URI"]);
-			$tpl->add_element($fa1);
-			
-			$fa1 = new core_form_hidden('tpl_name');
-			$fa1->value = $val[0];
-			$tpl->add_element($fa1);
-			
-			$fa1 = new core_form_textarea('text');
-			$fa1->value = $data;
-			$tpl->add_element($fa1);
-		
-			$fs1 = new core_form_submit('submit');
-			$fs1->value = 'Enregistrer';
-			$tpl->add_element($fs1);
-		
-			$tpl->tpl_name = $val[0];
-
-			/* chargement des variables */
-			$vars = $val[1]->get_vars();
-			foreach($vars as $name => $value)
-				if(is_string($value)) $vars[$name] = htmlentities($value);
-			$tpl->tpl_values = $vars;
-
-			$buf .= $tpl->render('god/tpl_edit', TRUE);
+			$backurl = base64_encode($_SERVER["REQUEST_URI"]);
+			$link = $this->wf->linker("/god/form/tpl/$val[0]?backurl=$backurl");
+			$list[] = array(
+				$val[0],
+				$link
+			);
 		}
+		$tpl = new core_tpl($this->wf);
+		$tpl->set("list", $list);
+		$buf = $tpl->fetch('god/tpl_edit', TRUE);
 
 		return($buf);
 	}

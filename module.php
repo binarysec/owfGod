@@ -14,10 +14,26 @@ class god extends wf_module {
 	
 	public function get_actions() {
 		return(array(
+			"/god/form/tpl" => array(
+				WF_ROUTE_ACTION,
+				"edit",
+				"form_tpl",
+				"Data",
+				WF_ROUTE_HIDE,
+				array("session:god")
+			),
 			"/god/edit/tpl" => array(
 				WF_ROUTE_ACTION,
 				"edit",
 				"edit_tpl",
+				"Data",
+				WF_ROUTE_HIDE,
+				array("session:god")
+			),
+			"/god/edit/lang" => array(
+				WF_ROUTE_ACTION,
+				"edit",
+				"edit_lang",
 				"Data",
 				WF_ROUTE_HIDE,
 				array("session:god")
