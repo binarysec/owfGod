@@ -1,6 +1,6 @@
 <?php
  
-class god extends wf_module {
+class wfm_god extends wf_module {
 	public function __construct($wf) {
 		$this->wf = $wf;
 	}
