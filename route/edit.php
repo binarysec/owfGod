@@ -115,7 +115,6 @@ class wfr_god_edit extends wf_route_request {
 		$tpl->add_element($fs1);
 
 		$this->a_admin_html->set_title("GOD Editing template: $doc");
-		$this->a_admin_html->set_subtitle("Editing template: $doc");
 		$this->a_admin_html->rendering($tpl->render("god/tpl_form"));
 	}
 	
