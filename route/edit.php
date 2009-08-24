@@ -66,13 +66,14 @@ class wfr_god_edit extends wf_route_request {
 				$o->change($key, $val);
 				
 			$file = $this->wf->get_last_filename($o->file);
-			
 			$this->wf->create_dir($file);
 			
+			unset($o->wf);
 			file_put_contents(
 				$file,
 				serialize($o)
 			);
+			$o->wf = $this->wf;
 		}
 
 		$this->redirect($_POST["backurl"]);
@@ -115,7 +116,6 @@ class wfr_god_edit extends wf_route_request {
 		$tpl->add_element($fs1);
 
 		$this->a_admin_html->set_title("GOD Editing template: $doc");
-		$this->a_admin_html->set_subtitle("Editing template: $doc");
 		$this->a_admin_html->rendering($tpl->render("god/tpl_form"));
 	}
 	
