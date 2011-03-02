@@ -1,5 +1,5 @@
 {if is_array($keys["___"])}
-<form method="POST" action="{link '/admin/god/lang/edit'}">
+<form method="POST" action="{link '/admin/system/god/lang/edit'}">
 <input type="hidden" name="context" value="{$ctx}">
 <div class="dataset_data">
 	<table class="dataset_data_table">

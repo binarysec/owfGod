@@ -1,5 +1,8 @@
 <?php
 
+
+
+
 class wfr_god_god_lang extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
@@ -17,10 +20,16 @@ class wfr_god_god_lang extends wf_route_request {
 	
 	public function show() {
 		$tpl = new core_tpl($this->wf);
-		$tpl->set("contexts", $this->core_lang->god_get());
+		$res = $this->core_lang->god_get();
+		usort($res, array($this, "cmp"));
+		$tpl->set("contexts", $res);
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/lang/index')
 		);
+	}
+	
+	public function cmp($a, $b) {
+		return(strcmp($a["context"], $b["context"]));
 	}
 	
 	public function get_form() {
@@ -78,8 +87,11 @@ class wfr_god_god_lang extends wf_route_request {
 		
 			foreach($values as $k => $v)
 				$cobj->change($k, stripslashes($v));
-				
-			$file = $this->wf->get_last_filename($cobj->file);
+			
+			$file = $this->wf->locate_file($cobj->file);
+			if(!$file) 
+				$file = $this->wf->get_last_filename($cobj->file);
+			
 			$this->wf->create_dir($file);
 
 			unset($cobj->wf);

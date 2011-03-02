@@ -14,14 +14,14 @@ class wfm_god extends wf_module {
 	
 	public function get_actions() {
 		return(array(
-			"/admin/god" => array(
+			"/admin/system/god" => array(
 				WF_ROUTE_REDIRECT,
-				"/admin/session/user",
-				$this->ts("God"),
+				"/admin/system/god/lang",
+				$this->ts("Super god management"),
 				WF_ROUTE_SHOW,
 				array("session:god")
 			),
-			"/admin/god/lang" => array(
+			"/admin/system/god/lang" => array(
 				WF_ROUTE_ACTION,
 				"god/lang",
 				"show",
@@ -29,7 +29,7 @@ class wfm_god extends wf_module {
 				WF_ROUTE_SHOW,
 				array("session:god")
 			),
-			"/admin/god/lang/get_form" => array(
+			"/admin/system/god/lang/get_form" => array(
 				WF_ROUTE_ACTION,
 				"god/lang",
 				"get_form",
@@ -37,7 +37,7 @@ class wfm_god extends wf_module {
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),
-			"/admin/god/lang/edit" => array(
+			"/admin/system/god/lang/edit" => array(
 				WF_ROUTE_ACTION,
 				"god/lang",
 				"edit",
