@@ -32,7 +32,7 @@
 		{/literal}
 		var request = YAHOO.util.Connect.asyncRequest(
 			'GET', 
-			'{link '/admin/god/lang/get_form'}' + '?context=' + ctx, 
+			'{link '/admin/system/god/lang/get_form'}' + '?context=' + ctx, 
 			callback
 		);
 		{literal}
