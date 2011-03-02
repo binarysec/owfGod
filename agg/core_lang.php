@@ -272,12 +272,12 @@ class core_lang extends wf_agg {
 			"/".
 			$name;
 		
-		if($this->contexts[$full])
+		if(isset($this->contexts[$full]))
 			return($this->contexts[$full]);
 		
 		/* register the module */
 		$r = $this->god_get("context", $name);
-		if(!is_array($r[0])) {
+		if(!isset($r[0]) || !is_array($r[0])) {
 			/* input */
 			$insert = array(
 				"create_t" => time(),
@@ -334,7 +334,7 @@ class core_lang extends wf_agg {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function check_lang_route($str) {
 		/* change language if possible */
-		if($this->available[$str]) {
+		if(isset($this->available[$str])) {
 			$this->set($str);
 			return(TRUE);
 		}
@@ -398,7 +398,7 @@ class core_lang extends wf_agg {
 	 * Resolv information in relation with the language
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function resolv($lang) {
-		if($this->ini[$lang])
+		if(isset($this->ini[$lang]))
 			return($this->ini[$lang]);
 		return(FALSE);
 	}
