@@ -106,7 +106,7 @@ class core_lang_context {
 	public function god_register_key($key) {
 		/* register the module */
 		$r = $this->god_get_keys("key", $key);
-		if(!is_array($r[0])) {
+		if(!isset($r[0]) || !is_array($r[0])) {
 			/* input */
 			$insert = array(
 				"create_t" => time(),
