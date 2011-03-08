@@ -1,8 +1,8 @@
-{css '/data/god/god.css'}
+%{css '/data/god/god.css'}%
 
-{js '/data/yui/build/connection/connection-min.js'}
+%{js '/data/yui/build/connection/connection-min.js'}%
 
-{literal}
+%{literal}%
 <script type="text/javascript">
 
 	/* ajax request */
@@ -29,38 +29,38 @@
 			failure:handleFailure
 		};
 		
-		{/literal}
+		%{/literal}%
 		var request = YAHOO.util.Connect.asyncRequest(
 			'GET', 
-			'{link '/admin/system/god/lang/get_form'}' + '?context=' + ctx, 
+			'%{link '/admin/system/god/lang/get_form'}%' + '?context=' + ctx, 
 			callback
 		);
-		{literal}
+		%{literal}%
 	}
 	
 </script>
-{/literal}
+%{/literal}%
 
-<h1><img src="{link '/data/god/title_god_lang.png'}"/>{@ 'Editing language contexts'}</h1>
+<h1><img src="%{link '/data/god/title_god_lang.png'}%"/>%{@ 'Editing language contexts'}%</h1>
 
 <div class="dataset_data god_dataset_data">
 	<table class="dataset_data_table">
 		<tbody class="dataset_data_body">
-			{foreach $contexts as $context}
+			%{foreach $contexts as $context}%
 			<tr>
 				<th>
 				<h1>
-				<a href="javascript: show_div({$context['id']}, '{$context['context']}');">
-				{$context['context']}
+				<a href="javascript: show_div(%{$context['id']}%, '%{$context['context']}%');">
+				%{$context['context']}%
 				</a>
 				</h1>
 				</th>
 			</tr>
 			<tr>
-				<th><div id="data_{$context["id"]}"></div></th>
+				<th><div id="data_%{$context["id"]}%"></div></th>
 			</tr>
 			
-			{/foreach}
+			%{/foreach}%
 		</tbody>
 	</table>
 </div>
