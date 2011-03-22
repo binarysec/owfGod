@@ -6,9 +6,9 @@ class wfm_god extends wf_module {
 	}
 	
 	public function get_name() { return("god"); }
-	public function get_description()  { return("OWF God module"); }
-	public function get_banner()  { return("god/1.1.0-HEAD"); }
-	public function get_version() { return("1.1.0-HEAD"); }
+	public function get_description()  { return("OWF Native God module"); }
+	public function get_banner()  { return("god/1.2.0"); }
+	public function get_version() { return("1.2.0"); }
 	public function get_authors() { return("Michael VERGOZ"); }
 	public function get_depends() { return(NULL); }
 	

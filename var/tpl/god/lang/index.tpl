@@ -1,45 +1,18 @@
 %{css '/data/god/god.css'}%
 
-%{js '/data/yui/build/connection/connection-min.js'}%
-
-%{literal}%
 <script type="text/javascript">
 
 	/* ajax request */
 	function show_div(dst_id, ctx) {
 		var dst = document.getElementById('data_' + dst_id);
-		
-		dst.visibility = "hidden";
-		dst.innerHTML = "Loading datas...";
-		
-		var handleSuccess = function(o) {
-			if(o.responseText !== undefined){
-				dst.innerHTML = o.responseText;
-			}
-		}
-	
-		var handleFailure = function(o) {
-			if(o.responseText !== undefined){
-				dst.innerHTML = "Server error";
-			}
-		}
-		
-		var callback = {
-			success:handleSuccess,
-			failure:handleFailure
-		};
-		
-		%{/literal}%
-		var request = YAHOO.util.Connect.asyncRequest(
-			'GET', 
-			'%{link '/admin/system/god/lang/get_form'}%' + '?context=' + ctx, 
-			callback
-		);
-		%{literal}%
+		$.get("%{link '/admin/system/god/lang/get_form'}%" + '?context=' + ctx, function(data) {
+			$(dst).html(data);
+			$(dst).show('slow');
+		});		
 	}
 	
 </script>
-%{/literal}%
+
 
 <h1><img src="%{link '/data/god/title_god_lang.png'}%"/>%{@ 'Editing language contexts'}%</h1>
 
