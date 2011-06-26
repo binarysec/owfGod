@@ -7,8 +7,8 @@ class wfm_god extends wf_module {
 	
 	public function get_name() { return("god"); }
 	public function get_description()  { return("OWF Native God module"); }
-	public function get_banner()  { return("god/1.2.0"); }
-	public function get_version() { return("1.2.0"); }
+	public function get_banner()  { return("god/1.2.2"); }
+	public function get_version() { return("1.2.2"); }
 	public function get_authors() { return("Michael VERGOZ"); }
 	public function get_depends() { return(NULL); }
 	
@@ -47,32 +47,65 @@ class wfm_god extends wf_module {
 			),
 			
 			
-			"/god/form/tpl" => array(
+			"/admin/system/god/tpl" => array(
 				WF_ROUTE_ACTION,
+				"god/tpl",
+				"show",
+				$this->ts("Gestion des templates"),
+				WF_ROUTE_SHOW,
+				array("session:god")
+			),
+			"/admin/system/god/tpl/edit" => array(
+				WF_ROUTE_ACTION,
+				"god/tpl",
 				"edit",
-				"form_tpl",
-				"Data",
+				$this->ts("Gestion des templates"),
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),
-			"/god/edit/tpl" => array(
+			"/admin/system/god/tpl/content" => array(
 				WF_ROUTE_ACTION,
-				"edit",
-				"edit_tpl",
-				"Data",
+				"god/tpl",
+				"content",
+				$this->ts("Gestion des templates"),
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),
-			"/god/edit/lang" => array(
-				WF_ROUTE_ACTION,
-				"edit",
-				"edit_lang",
-				"Data",
-				WF_ROUTE_HIDE,
-				array("session:god")
-			)
 		));
 	}
+	
+	public function json_module() {
+ 
+		/* list of definitions */
+		$return = array(
+			array(
+				/* aggregator authorized */
+				"agg" => "core_lang",
+	
+				/* method of the authorized aggregator */
+				"method" => "json_context",
+	
+				/* permission associated */
+				"perm" => array("session:god")
+			),
+			
+			array(
+				/* aggregator authorized */
+				"agg" => "god_tpl",
+	
+				/* method of the authorized aggregator */
+				"method" => "json_context",
+	
+				/* permission associated */
+				"perm" => array("session:god")
+			),
+		);
+
+ 
+		/* then return the information */
+		return($return);
+	}
+	
 }
 
 ?>

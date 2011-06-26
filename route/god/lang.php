@@ -1,8 +1,6 @@
 <?php
 
 
-
-
 class wfr_god_god_lang extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
@@ -36,10 +34,12 @@ class wfr_god_god_lang extends wf_route_request {
 		$ctx = $this->wf->get_var("context");
 		
 		/* get context */
-		$context = $this->core_lang->god_get("context", $ctx);
-		if(!is_array($context[0])) 
+		$context = $this->core_lang->god_get("id", $ctx);
+		if(!is_array($context[0])) {
+			echo "<center>No data</center>";
 			exit(0);
-			
+		}
+
 		/* get all keys */
 		$keys = $this->core_lang->god_get_keys("context_id", $context[0]["id"]);
 		$langs = $this->core_lang->get_list();
@@ -48,10 +48,10 @@ class wfr_god_god_lang extends wf_route_request {
 		$res = array();
 		foreach($langs as $v) {
 			$cobj = $this->core_lang->get_context(
-				$ctx,
+				$context[0]["context"],
 				$v["code"]
 			);
-			
+		
 			$res[$v["code"]] = array();
 			foreach($keys as $key) {
 				$rk = base64_encode($key["key"]);
@@ -73,15 +73,15 @@ class wfr_god_god_lang extends wf_route_request {
 	public function edit() {
 		$ctx = $this->wf->get_var("context");
 		$ts = $this->wf->get_var("ts");
-		
+
 		/* get context */
-		$context = $this->core_lang->god_get("context", $ctx);
+		$context = $this->core_lang->god_get("id", $ctx);
 		if(!is_array($context[0])) 
 			exit(0);
-			
+
 		foreach($ts as $lang => $values) {
 			$cobj = $this->core_lang->get_context(
-				$ctx,
+				$context[0]["context"],
 				$lang
 			);
 		
@@ -105,7 +105,7 @@ class wfr_god_god_lang extends wf_route_request {
 		$request = $this->wf->core_request();
 		$request->set_header(
 			"Location", 
-			$this->wf->linker("/admin/god/lang")
+			$this->wf->linker("/admin/system/god/lang")
 		);
 		$request->send_headers();
 		exit(0);
