@@ -7,12 +7,14 @@ class god_tpl extends wf_agg {
 	public $available = NULL;
 	
 	private $_core_cacher;
+	private $_session;
 	
 	public function loader($wf) {
 		$this->wf = $wf;
 		
 
 		$this->_core_cacher = $this->wf->core_cacher();
+		$this->_session = $this->wf->session();
 		
 		$struct = array(
 			"id" => WF_PRI,
@@ -57,10 +59,22 @@ class god_tpl extends wf_agg {
 	 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function search($by=array()) {
+		/* create cache line */
+		$cl = "god_core_tpl";
+		foreach($by as $k => $v)
+			$cl .= "_$k:$v";
+		
+		/* get cache */
+		if(($cache = $this->_core_cacher->get($cl)))
+			return($cache);
+			
 		$q = new core_db_select("god_tpl");
 		$q->where($by);
 		$this->wf->db->query($q);
 		$res = $q->get_result();
+		
+		/* store cache */
+		$this->_core_cacher->store($cl, $res);
 		return($res);
 	}
 	
@@ -112,6 +126,30 @@ class god_tpl extends wf_agg {
 	
 	public function cmp($a, $b) {
 		return(strcmp($a["fetch"], $b["fetch"]));
+	}
+	
+	public function search_db($query, $search, $comp="~=") {
+		/* check permissions, only admin can looks at user db */
+		if(!$this->_session->iam_god()) 
+			return(false);
+		if(strlen($search) <= 2)
+			return(false);
+			
+		$query->alias("god_tpl", "god_tpl");
+		
+		$query->do_comp("god_tpl.fetch", $comp, $search);
+		
+		return(true);
+	}
+	
+	public function search_link($data) {
+		$q = $this->wf->get_var("q");
+		$link = $this->wf->linker('/admin/system/god/tpl/edit')."?context=$data[id]&q=$q";
+		$r = "<strong>GOD Template unit</strong><br/>".
+			"<strong>Context: $data[fetch]</strong><br/>".
+			"Identifier: #$data[id]<br/><br/>".
+			'<a href="'.$link.'">Edit template now</a>';
+		return($r);
 	}
 	
 

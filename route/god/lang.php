@@ -51,13 +51,13 @@ class wfr_god_god_lang extends wf_route_request {
 				$context[0]["context"],
 				$v["code"]
 			);
-		
+			
 			$res[$v["code"]] = array();
 			foreach($keys as $key) {
 				$rk = base64_encode($key["key"]);
 				$res[$v["code"]][$rk] = 
-					$cobj->ts($key["key"]);
-				$res["___"][$rk] = $key["key"];
+					html_entity_decode($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
+				$res["___"][$rk] = html_entity_decode($key["key"], ENT_COMPAT, $v["encoding"]);
 			}
 		}
 
@@ -79,14 +79,18 @@ class wfr_god_god_lang extends wf_route_request {
 		if(!is_array($context[0])) 
 			exit(0);
 
+		$l = $this->core_lang->get_list();
+		
 		foreach($ts as $lang => $values) {
 			$cobj = $this->core_lang->get_context(
 				$context[0]["context"],
 				$lang
 			);
-		
+			
+			$lselect = &$l[$lang];
+			
 			foreach($values as $k => $v)
-				$cobj->change($k, stripslashes($v));
+				$cobj->change($k, htmlentities($v, ENT_COMPAT, $lselect["encoding"]));
 			
 			$file = $this->wf->locate_file($cobj->file);
 			if(!$file) 

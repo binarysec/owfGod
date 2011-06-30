@@ -106,6 +106,19 @@ class wfm_god extends wf_module {
 		return($return);
 	}
 	
+	public function search_module() {
+		$return = array();
+		
+		$info = array(
+			"name" => $this->ts("god_tpl"),
+			"agg" => "god_tpl",
+			"met_db" => "search_db",
+			"met_link" => "search_link",
+		);
+		$return[] = $info;
+		
+		return($return);
+	}
+	
 }
 
-?>
