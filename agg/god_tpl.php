@@ -51,7 +51,7 @@ class god_tpl extends wf_agg {
 		$q = new core_db_insert("god_tpl", $insert);
 		$this->wf->db->query($q);
 		
-		return($code);
+		return($this->wf->db->get_last_insert_id());
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
