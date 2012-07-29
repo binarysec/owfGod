@@ -7,19 +7,21 @@ class wfm_god extends wf_module {
 	
 	public function get_name() { return("god"); }
 	public function get_description()  { return("OWF Native God module"); }
-	public function get_banner()  { return("god/1.2.4"); }
-	public function get_version() { return("1.2.4"); }
+	public function get_banner()  { return("god/1.3.0"); }
+	public function get_version() { return("1.3.0"); }
 	public function get_authors() { return("Michael VERGOZ"); }
 	public function get_depends() { return(NULL); }
 	
 	public function get_actions() {
 		return(array(
+
 			"/admin/system/god" => array(
-				WF_ROUTE_REDIRECT,
-				"/admin/system/god/lang",
+				WF_ROUTE_ACTION,
+				"admin/system/god",
+				"show",
 				$this->ts("Super god management"),
 				WF_ROUTE_SHOW,
-				array("session:god")
+				array("admin:system"),
 			),
 			"/admin/system/god/lang" => array(
 				WF_ROUTE_ACTION,
