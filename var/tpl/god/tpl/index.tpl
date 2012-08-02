@@ -2,12 +2,12 @@
 
 <script type="text/javascript">
 	$(function() {
-		$("#radio").buttonset();
-		$( "input", "#radio" ).click(function() { 
+	
+		$( "a", "#button" ).click(function() { 
 			var id = $(this).attr('id');
-			if(id == 'radio1')
+			if(id == 'button1')
 				location.href = "%{link '/admin/system/god/lang'}%";
-			else if(id == 'radio2')
+			else if(id == 'button2')
 				location.href = "%{link '/admin/system/god/tpl'}%";
 				
 			return(false); 
@@ -43,11 +43,21 @@
 
 <h1><img src="%{link '/data/god/title_god_tpl.png'}%"/>%{@ 'God super administration'}%</h1>
 
+<!--
 <div id="radio">
 	<input type="radio" id="radio1" name="radio" /><label for="radio1">%{@ 'Language contexts edition'}%</label>
 	<input type="radio" id="radio2" name="radio" checked="checked" /><label for="radio2">%{@ 'Template contexts edition'}%</label>
 </div>
-<br/>
+-->
+
+<ul id="button" class="localnav" data-type="horizontal" data-role="controlgroup">
+	<li>
+		<a id="button1" name="button" data-transition="fade" data-role="button" href="#">%{@ 'Language contexts edition'}%</a>
+	</li>
+	<li>
+		<a id="button2" name="button" class="ui-btn-active" data-transition="fade" data-role="button" href="#">%{@ 'Template contexts edition'}%</a>
+	</li>
+</ul>
 
 <center>
 	<div id="god-tpl">
