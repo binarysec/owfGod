@@ -448,31 +448,5 @@ class core_lang extends wf_agg {
 		return($res);
 	}
 	
-	public function json_context() {
-		$res = $this->god_get();
-		
-		for($a=0; $a<count($res); $a++) {
-			$v = &$res[$a];
-			
-			$cobj = $this->get_context(
-				$v["context"]
-			);
-		
-			$file = $this->wf->locate_file($cobj->file);
-			if(!$file) 
-				$file = $this->wf->get_last_filename($cobj->file);
-				
-			$v["file"] = $file;
-		}
-		
-		usort($res, array($this, "cmp"));
-		return($res);
-		
-	}
-	
-	public function cmp($a, $b) {
-		return(strcmp($a["context"], $b["context"]));
-	}
-	
 }
 

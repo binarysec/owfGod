@@ -4,6 +4,7 @@
 class wfr_god_god_lang extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
+	private $lang;
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 *
@@ -14,13 +15,33 @@ class wfr_god_god_lang extends wf_route_request {
 // 		$this->a_session = $this->wf->session();
 		$this->core_lang = $this->wf->core_lang();
 		$this->a_admin_html = $this->wf->admin_html();
+		
+		$this->ctx = $this->wf->get_var("context");
+		
+		$this->lang = $this->wf->core_lang()->get_context(
+			"admin/system/god"
+		);
 	}
 	
 	public function show() {
 		$tpl = new core_tpl($this->wf);
 		$res = $this->core_lang->god_get();
+		$modules_array = array();
+		foreach ($res as $k => $v){
+			$module = explode('/', $v['context']);
+			if(!array_key_exists($module[0], $modules_array)){
+				$modules_array[$module[0]] = true;
+				$res[] = array(
+					"context" => $module[0],
+					"divider" => true,
+				);
+			}
+			$res[$k]["divider"] = false;
+		}
 		usort($res, array($this, "cmp"));
 		$tpl->set("contexts", $res);
+		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god"));
+		$this->a_admin_html->set_title($this->lang->ts("Context Edition"));
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/lang/index')
 		);
@@ -29,44 +50,82 @@ class wfr_god_god_lang extends wf_route_request {
 	public function cmp($a, $b) {
 		return(strcmp($a["context"], $b["context"]));
 	}
-	
-	public function get_form() {
-		$ctx = $this->wf->get_var("context");
-		
+
+	public function get_form(){
+		/*If no ctx is given, redirect to previous lang list */
+		if($this->ctx == NULL)
+			$this->wf->redirector($this->wf->linker('/admin/system/god/lang'));
+			
+		$language = $this->core_lang->get_code();
+
 		/* get context */
-		$context = $this->core_lang->god_get("id", $ctx);
+		$context = $this->core_lang->god_get("id", $this->ctx);
 		if(!is_array($context[0])) {
 			echo "<center>No data</center>";
 			exit(0);
 		}
-
 		/* get all keys */
 		$keys = $this->core_lang->god_get_keys("context_id", $context[0]["id"]);
 		$langs = $this->core_lang->get_list();
-		
+
 		/* create result */
 		$res = array();
+		$inputs = '';
+		$lang_menu = '';
+		
 		foreach($langs as $v) {
+			$checked = '';
+			
+			if($v["code"] == $language)
+				$checked = ' checked="checked" ';
+				
 			$cobj = $this->core_lang->get_context(
 				$context[0]["context"],
 				$v["code"]
 			);
-			
+
+			/*Create buttons with langs*/
+			$lang_menu .=
+				'<input '.
+					'type="radio" '.$checked.' '.
+					'name="lang-selector" '.
+					'class="lang-selector" '.
+					'id="lang-selector-'.$v["code"].'" '.
+					'value="'.$v["code"].'" '.
+				'/>'.
+				'<label for="lang-selector-'.$v["code"].'">'.$v["name"].'</label>';
+
+			/*Create inputs for all langs*/
 			$res[$v["code"]] = array();
 			foreach($keys as $key) {
 				$rk = base64_encode($key["key"]);
 				$res[$v["code"]][$rk] = 
 					html_entity_decode($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
-				$res["___"][$rk] = html_entity_decode($key["key"], ENT_COMPAT, $v["encoding"]);
+
+				/*Create inputs for language edition*/
+				$inputs .=
+					'<input '.
+						'type="text" '.
+						'name="ts['.$v["code"].']['.$rk.']" '.
+						'value="'.$res[$v["code"]][$rk].'" '.
+						'class="lang-inputs lang-selector-'.$v["code"].'" '.
+					'/>';
 			}
 		}
-
+		
 		/* create tpl */
 		$tpl = new core_tpl($this->wf);
 		$tpl->set("keys", &$res);
-		$tpl->set("langs", &$langs);
-		$tpl->set("ctx", &$ctx);
-		echo $tpl->fetch('god/lang/form');
+		$tpl->set("ctx", &$this->ctx);
+		$tpl->set("language", $language);
+		$tpl->set("lang_menu", $lang_menu);
+		$tpl->set("inputs", $inputs);
+		
+		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god/lang"));
+		$this->a_admin_html->set_title($this->lang->ts("Language Edition"));
+		$this->a_admin_html->rendering(
+			$tpl->fetch('god/lang/form')
+		);
 		exit(0);
 	}
 	

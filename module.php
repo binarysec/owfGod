@@ -31,7 +31,7 @@ class wfm_god extends wf_module {
 				WF_ROUTE_SHOW,
 				array("session:god")
 			),
-			"/admin/system/god/lang/get_form" => array(
+			"/admin/system/god/lang/edit_lang" => array(
 				WF_ROUTE_ACTION,
 				"god/lang",
 				"get_form",
