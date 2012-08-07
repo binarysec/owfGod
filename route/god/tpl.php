@@ -4,6 +4,8 @@
 class wfr_god_god_tpl extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
+	private $lang;
+	public $ctx;
 	
 	private $_god_tpl;
 	
@@ -17,95 +19,190 @@ class wfr_god_god_tpl extends wf_route_request {
 		$this->core_lang = $this->wf->core_lang();
 		$this->a_admin_html = $this->wf->admin_html();
 		$this->_god_tpl = $this->wf->god_tpl();
+
+		$this->ctx = $this->wf->get_var("context");
+
+		$this->lang = $this->wf->core_lang()->get_context(
+			"admin/system/god"
+		);
 		
 	}
 	
 	public function show() {
+
+		$res = $this->_god_tpl->search();
+		
+		for($a=0; $a<count($res); $a++) {
+			$v = &$res[$a];
+			
+// 			$cobj = $this->get_context(
+// 				$v["context"]
+// 			);
+// 		
+// 			$file = $this->wf->locate_file($cobj->file);
+// 			if(!$file) 
+// 				$file = $this->wf->get_last_filename($cobj->file);
+// 				
+// 			$v["file"] = $file;
+		}
+// 		
+		$modules_array = array();
+		foreach ($res as $k => $v){
+			$module = explode('/', $v['fetch']);
+			if(!array_key_exists($module[0], $modules_array)){
+				$modules_array[$module[0]] = true;
+				$res[] = array(
+					"fetch" => $module[0],
+					"divider" => true,
+				);
+			}
+			$res[$k]["divider"] = false;
+		}
+		usort($res, array($this, "cmp"));
+
 		$tpl = new core_tpl($this->wf);
+		$tpl->set("templates", $res);
+		
+		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god"));
+		$this->a_admin_html->set_title($this->lang->ts("Template Edition"));
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/tpl/index')
 		);
 	}
+
+	public function cmp($a, $b) {
+		return(strcmp($a["fetch"], $b["fetch"]));
+	}
 	
-	public function edit() {
-		$ctx = $this->wf->get_var("context");
+	public function edit_tpl() {
+		/*If no ctx is given, redirect to previous lang list */
+		if($this->ctx == NULL)
+			$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+
+		$lng = $this->core_lang->get_code();
 		
-		$res = $this->_god_tpl->search(array("id" => $ctx));
+		$res = $this->_god_tpl->search(array("id" => $this->ctx));
 		if(count($res) <= 0) {
-			echo "No data";
+			echo "<center>No data</center>";
 			exit(0);
 		}
 
 		$langs = $this->core_lang->get_list();
+		$lang_buttons = '';
+		$textareas = '';
+		
+		foreach($langs as $v) {
+			$checked = '';
+			if($v["code"] == $lng)
+				$checked = ' checked="checked" ';
+			
+			/*Create buttons with langs*/
+			$lang_buttons .=
+				'<input '.
+					'type="radio" '.
+					$checked.' '.
+					'name="lang-selector" '.
+					'class="tpl-selector" '.
+					'id="tpl-selector-'.$v["code"].'" '.
+					'value="'.$v["code"].'" '.
+				'/>'.
+				'<label for="tpl-selector-'.$v["code"].'">'.$v["name"].'</label>';
+
+			$content = $this->tpl_content($v["code"]);
+
+			$textareas .=
+				'<div class="tpl-textareas tpl-selector-'.$v["code"].'">'.
+					'<textarea id="god-textarea-'.$v["code"].'" name="ts['.$v["code"].'][data]" rows="30" style="width: 100%">'.
+						$content.
+					'</textarea>'.
+				'</div>';
+		}
 
 		$tpl = new core_tpl($this->wf);
 		$tpl->set("result", $res[0]);
+		$tpl->set("ctx", $this->ctx);
+		$tpl->set("lng", $lng);
 		$tpl->set("langs", $langs);
+		$tpl->set("lang_buttons", $lang_buttons);
+		$tpl->set("textareas", $textareas);
+/*
 		$tpl->set("tinymce", $this->wf->mod_exists("ppTinyMCE"));
+*/
+		
+		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god/tpl"));
+		$this->a_admin_html->set_title($this->lang->ts("Template Edition"));
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/tpl/form')
 		);
-		
-		
 	}
-	
-	public function content() {
-		$ctx = $this->wf->get_var("context");
-		$type = $this->wf->get_var("type");
-		$action = $this->wf->get_var("action");
-		
-		$res = $this->_god_tpl->search(array("id" => $ctx));
+
+	private function tpl_content($language) {		
+		$res = $this->_god_tpl->search(array("id" => $this->ctx));
 		if(count($res) <= 0) {
-			echo "No data";
+			echo "<center>No data</center>";
 			exit(0);
 		}
 		$info = &$res[0];
 		
-		$l = $this->core_lang->get_list();
-		
-		/* need update ? */
-		if($action == "update") {
-			if($type == "default") {
-				$file = $this->locate($info["fetch"]);
-			}
-			else {
-				if(!array_key_exists($type, $l))
-					exit(0);
-					
-				$lselect = &$l[$type];
-				$file = $this->locate($info["fetch"], $type, true);
-				$this->wf->create_dir($file);
-			}
-			
-			$data = $this->wf->get_var("data");
-			
-			file_put_contents($file, $data);
-			
-			$locate = $this->wf->linker("/admin/system/god/tpl/edit").
-				"?context=".$ctx.
-				"&type=".$type
-				;
-			header("Location: $locate");
+		$langs = $this->core_lang->get_list();
+		if(!array_key_exists($language, $langs)){
+			echo "<center>Language invalid</center>";
 			exit(0);
 		}
-		
-		/* check langs */
-		if($type == "default") {
-			$file = $this->locate($info["fetch"]);
+		$lselect = &$langs[$language];
 			
-			$lselect = $this->core_lang->get();
+		$file = $this->locate($info["fetch"], $language, true);
+		if(!$file){
+			echo "<center>TPL File not found</center>";
+			exit(0);
 		}
-		else {
-			
-			if(!array_key_exists($type, $l))
-				exit(0);
-			$lselect = &$l[$type];
-			$file = $this->locate($info["fetch"], $type);
-			if(!$file)
-				exit(0);
-		}
+		$this->wf->create_dir($file);
 		
-		echo htmlentities(file_get_contents($file), ENT_COMPAT, $lselect["encoding"]);
+		return(htmlentities(file_get_contents($file), ENT_COMPAT, $lselect["encoding"]));
+	}
+
+
+	public function edit(){
+		/*Redirect user if the guy has access to this function without good values*/
+		if($this->ctx == NULL)
+			$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+			
+		$ts = $this->wf->get_var("ts");
+		if(!isset($ts) || !is_array($ts))
+			$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+
+
+		$res = $this->_god_tpl->search(array("id" => $this->ctx));
+		if(count($res) <= 0) {
+			echo "<center>No data</center>";
+			exit(0);
+		}
+
+		$info = &$res[0];
+		$l = $this->core_lang->get_list();
+		
+
+		foreach($ts as $lang => $data) {
+			if(!array_key_exists($lang, $l)){
+				$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+				exit(0);
+			}
+			
+			/*Locate the appropriate file for putting data content */
+			$file = $this->locate($info["fetch"], $lang, true);
+			if(!$file){
+				echo "<center>TPL File not found</center>";
+				exit(0);
+			}
+			$this->wf->create_dir($file);
+			
+			file_put_contents($file, $data);
+		}
+
+		/*Edition is finished, back to edition of TPL*/
+		$locate = $this->wf->linker("/admin/system/god/tpl/edit_tpl")."?context=".$this->ctx;
+		header("Location: $locate");
+		exit(0);
 	}
 	
 	public function locate($tpl_name, $lang=null, $findbest=false) {

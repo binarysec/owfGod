@@ -57,18 +57,18 @@ class wfm_god extends wf_module {
 				WF_ROUTE_SHOW,
 				array("session:god")
 			),
-			"/admin/system/god/tpl/edit" => array(
+			"/admin/system/god/tpl/edit_tpl" => array(
 				WF_ROUTE_ACTION,
 				"god/tpl",
-				"edit",
+				"edit_tpl",
 				$this->ts("Gestion des templates"),
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),
-			"/admin/system/god/tpl/content" => array(
+			"/admin/system/god/tpl/edit" => array(
 				WF_ROUTE_ACTION,
 				"god/tpl",
-				"content",
+				"edit",
 				$this->ts("Gestion des templates"),
 				WF_ROUTE_HIDE,
 				array("session:god")

@@ -130,11 +130,16 @@ class wfr_god_god_lang extends wf_route_request {
 	}
 	
 	public function edit() {
-		$ctx = $this->wf->get_var("context");
+		if($this->ctx == NULL)
+			$this->wf->redirector($this->wf->linker('/admin/system/god/lang'));
+			
 		$ts = $this->wf->get_var("ts");
+		if(!isset($ts) || !is_array($ts))
+			$this->wf->redirector($this->wf->linker('/admin/system/god/lang'));
+		
 
 		/* get context */
-		$context = $this->core_lang->god_get("id", $ctx);
+		$context = $this->core_lang->god_get("id", $this->ctx);
 		if(!is_array($context[0])) 
 			exit(0);
 

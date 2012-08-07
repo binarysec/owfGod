@@ -24,6 +24,6 @@
 	</div>
 	<form id="ctx-editor" action="%{link '/admin/system/god/lang/edit'}%?context=%{$ctx}%" method="POST">
 		%{$inputs}%
-		<button type="submit" data-theme="b">%{@ 'Edit !'}%</button>
+		<button type="submit" data-theme="b">%{@ 'Save all !'}%</button>
 	</form>
 </div>

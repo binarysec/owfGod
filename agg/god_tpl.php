@@ -101,33 +101,6 @@ class god_tpl extends wf_agg {
 		$this->wf->db->query($q);
 	}
 	
-	public function json_context() {
-		$res = $this->search();
-		
-
-		for($a=0; $a<count($res); $a++) {
-			$v = &$res[$a];
-			
-// 			$cobj = $this->get_context(
-// 				$v["context"]
-// 			);
-// 		
-// 			$file = $this->wf->locate_file($cobj->file);
-// 			if(!$file) 
-// 				$file = $this->wf->get_last_filename($cobj->file);
-// 				
-// 			$v["file"] = $file;
-		}
-// 		
-		usort($res, array($this, "cmp"));
-		return($res);
-		
-	}
-	
-	public function cmp($a, $b) {
-		return(strcmp($a["fetch"], $b["fetch"]));
-	}
-	
 	public function search_db($query, $search, $comp="~=") {
 		/* check permissions, only admin can looks at user db */
 		if(!$this->_session->iam_god()) 
