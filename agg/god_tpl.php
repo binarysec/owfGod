@@ -10,7 +10,6 @@ class god_tpl extends wf_agg {
 	private $_session;
 	
 	public function loader($wf) {
-		$this->wf = $wf;
 		
 
 		$this->_core_cacher = $this->wf->core_cacher();

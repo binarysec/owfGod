@@ -26,7 +26,6 @@ class god_renderer extends wf_agg {
 	private $_core_lang;
 	
 	public function loader($wf) {
-		$this->wf = $wf;
 		$this->_core_html = $wf->core_html();
 		$this->_core_lang = $wf->core_lang();
 		

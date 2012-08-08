@@ -146,7 +146,6 @@ class core_lang extends wf_agg {
 	private $_core_register;
 	
 	public function loader($wf) {
-		$this->wf = &$wf;
 		
 		/** \todo SYSTEME DE CACHE */
 		/* prend le fichier ini */
