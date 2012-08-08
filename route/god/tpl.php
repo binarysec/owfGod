@@ -108,7 +108,7 @@ class wfr_god_god_tpl extends wf_route_request {
 				'/>'.
 				'<label for="tpl-selector-'.$v["code"].'">'.$v["name"].'</label>';
 
-			$content = $this->tpl_content($v["code"]);
+			$content = $this->tpl_content($res, $langs, $v["code"]);
 
 			$textareas .=
 				'<div class="tpl-textareas tpl-selector-'.$v["code"].'">'.
@@ -136,27 +136,27 @@ class wfr_god_god_tpl extends wf_route_request {
 		);
 	}
 
-	private function tpl_content($language) {		
-		$res = $this->_god_tpl->search(array("id" => $this->ctx));
-		if(count($res) <= 0) {
-			echo "<center>No data</center>";
-			exit(0);
-		}
-		$info = &$res[0];
+	private function tpl_content(&$res, $langs, $language) {	
+		$info = $res[0];
 		
-		$langs = $this->core_lang->get_list();
 		if(!array_key_exists($language, $langs)){
 			echo "<center>Language invalid</center>";
 			exit(0);
 		}
-		$lselect = &$langs[$language];
-			
+
+		/*Find the appropriate template file*/
 		$file = $this->locate($info["fetch"], $language, true);
-		if(!$file){
-			echo "<center>TPL File not found</center>";
-			exit(0);
+		if(!is_file($file)){
+			/*If file does not exist, find the default template*/
+			$file = $this->locate($info["fetch"], NULL, true);
+			if(!$file){
+				echo "<center>TPL File not found</center>";
+				exit(0);
+			}
 		}
 		$this->wf->create_dir($file);
+		
+		$lselect = &$langs[$language];
 		
 		return(htmlentities(file_get_contents($file), ENT_COMPAT, $lselect["encoding"]));
 	}

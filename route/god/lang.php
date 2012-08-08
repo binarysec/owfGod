@@ -64,6 +64,7 @@ class wfr_god_god_lang extends wf_route_request {
 			echo "<center>No data</center>";
 			exit(0);
 		}
+
 		/* get all keys */
 		$keys = $this->core_lang->god_get_keys("context_id", $context[0]["id"]);
 		$langs = $this->core_lang->get_list();
@@ -115,14 +116,15 @@ class wfr_god_god_lang extends wf_route_request {
 		
 		/* create tpl */
 		$tpl = new core_tpl($this->wf);
-		$tpl->set("keys", &$res);
-		$tpl->set("ctx", &$this->ctx);
+		$tpl->set("keys", $res);
+		$tpl->set("ctx", $this->ctx);
+		$tpl->set("ctx_name", $context[0]['context']);
 		$tpl->set("language", $language);
 		$tpl->set("lang_menu", $lang_menu);
 		$tpl->set("inputs", $inputs);
 		
 		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god/lang"));
-		$this->a_admin_html->set_title($this->lang->ts("Language Edition"));
+		$this->a_admin_html->set_title($this->lang->ts("Context Edition"));
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/lang/form')
 		);

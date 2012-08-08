@@ -1,5 +1,3 @@
-
-
 <div class="content-secondary">
 	<div id="jqm-homeheader">
 		<h1 id="jqm-logo"><img src="%{link '/data/god/locale.png'}%" alt="%{@ 'God super administration'}%" /></h1>
