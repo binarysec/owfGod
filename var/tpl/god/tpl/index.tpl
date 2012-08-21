@@ -9,10 +9,10 @@
 
 	<ul id="button" class="localnav" data-type="horizontal" data-role="controlgroup">
 		<li>
-			<a name="button" data-transition="fade" data-role="button" href="%{link '/admin/system/god/lang'}%">%{@ 'Languages'}%</a>
+			<a name="button" data-transition="fade" data-role="button" href="%{link '/admin/system/god/context'}%?back=%{$oldback}%">%{@ 'Contexts'}%</a>
 		</li>
 		<li>
-			<a name="button" class="ui-btn-active" data-transition="fade" data-role="button" href="%{link '/admin/system/god/tpl'}%">%{@ 'Templates'}%</a>
+			<a name="button" class="ui-btn-active" data-transition="fade" data-role="button" href="%{link '/admin/system/god/tpl'}%?back=%{$oldback}%">%{@ 'Templates'}%</a>
 		</li>
 	</ul>
 	
@@ -28,7 +28,7 @@
 			%{else}%
 
 				<li data-role="list-divider">
-					<a href="%{link '/admin/system/god/tpl/edit_tpl'}%?context=%{$v['id']}%"><strong>%{$v['fetch']}%</strong></a>
+					<a href="%{link '/admin/system/god/tpl/edit_tpl'}%?context=%{$v['id']}%&back=%{$back}%"><strong>%{$v['fetch']}%</strong></a>
 				</li>
 			%{/if}%
 		%{/foreach}%

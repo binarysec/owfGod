@@ -5,6 +5,7 @@ class wfr_god_god_tpl extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
 	private $lang;
+	private $cipher;
 	public $ctx;
 	
 	private $_god_tpl;
@@ -19,12 +20,15 @@ class wfr_god_god_tpl extends wf_route_request {
 		$this->core_lang = $this->wf->core_lang();
 		$this->a_admin_html = $this->wf->admin_html();
 		$this->_god_tpl = $this->wf->god_tpl();
+		$this->cipher = $this->wf->core_cipher();
 
 		$this->ctx = $this->wf->get_var("context");
 
 		$this->lang = $this->wf->core_lang()->get_context(
 			"admin/system/god"
 		);
+		
+		$this->back = $this->cipher->get_var("back");
 		
 	}
 	
@@ -49,6 +53,8 @@ class wfr_god_god_tpl extends wf_route_request {
 		$modules_array = array();
 		foreach ($res as $k => $v){
 			$module = explode('/', $v['fetch']);
+			if($module[0] == "")
+				$module[0] = "/";
 			if(!array_key_exists($module[0], $modules_array)){
 				$modules_array[$module[0]] = true;
 				$res[] = array(
@@ -62,8 +68,12 @@ class wfr_god_god_tpl extends wf_route_request {
 
 		$tpl = new core_tpl($this->wf);
 		$tpl->set("templates", $res);
+
+		$here = $this->cipher->encode($_SERVER['REQUEST_URI']);
+		$tpl->set("back", $here);
+		$tpl->set("oldback", $this->wf->get_var("back"));
 		
-		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god"));
+		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Template Edition"));
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/tpl/index')
@@ -77,7 +87,7 @@ class wfr_god_god_tpl extends wf_route_request {
 	public function edit_tpl() {
 		/*If no ctx is given, redirect to previous lang list */
 		if($this->ctx == NULL)
-			$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+			$this->wf->redirector($this->back);
 
 		$lng = $this->core_lang->get_code();
 		
@@ -129,7 +139,7 @@ class wfr_god_god_tpl extends wf_route_request {
 		$tpl->set("tinymce", $this->wf->mod_exists("ppTinyMCE"));
 */
 		
-		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god/tpl"));
+		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Template Edition"));
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/tpl/form')
@@ -140,7 +150,7 @@ class wfr_god_god_tpl extends wf_route_request {
 		$info = $res[0];
 		
 		if(!array_key_exists($language, $langs)){
-			echo "<center>Language invalid</center>";
+			echo "<center>Invalid language</center>";
 			exit(0);
 		}
 
@@ -165,11 +175,11 @@ class wfr_god_god_tpl extends wf_route_request {
 	public function edit(){
 		/*Redirect user if the guy has access to this function without good values*/
 		if($this->ctx == NULL)
-			$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+			$this->wf->redirector($this->back);
 			
 		$ts = $this->wf->get_var("ts");
 		if(!isset($ts) || !is_array($ts))
-			$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+			$this->wf->redirector($this->back);
 
 
 		$res = $this->_god_tpl->search(array("id" => $this->ctx));
@@ -184,7 +194,7 @@ class wfr_god_god_tpl extends wf_route_request {
 
 		foreach($ts as $lang => $data) {
 			if(!array_key_exists($lang, $l)){
-				$this->wf->redirector($this->wf->linker('/admin/system/god/tpl'));
+				$this->wf->redirector($this->back);
 				exit(0);
 			}
 			

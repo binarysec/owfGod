@@ -23,25 +23,25 @@ class wfm_god extends wf_module {
 				WF_ROUTE_SHOW,
 				array("admin:system"),
 			),
-			"/admin/system/god/lang" => array(
+			"/admin/system/god/context" => array(
 				WF_ROUTE_ACTION,
-				"god/lang",
+				"god/context",
 				"show",
-				$this->ts("Gestion des langues"),
+				$this->ts("Gestion des contextes"),
 				WF_ROUTE_SHOW,
 				array("session:god")
 			),
-			"/admin/system/god/lang/edit_lang" => array(
+			"/admin/system/god/context/edit_ctx" => array(
 				WF_ROUTE_ACTION,
-				"god/lang",
-				"get_form",
+				"god/context",
+				"edit_form",
 				"Data",
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),
-			"/admin/system/god/lang/edit" => array(
+			"/admin/system/god/context/edit" => array(
 				WF_ROUTE_ACTION,
-				"god/lang",
+				"god/context",
 				"edit",
 				"Data",
 				WF_ROUTE_HIDE,
@@ -69,7 +69,7 @@ class wfm_god extends wf_module {
 				WF_ROUTE_ACTION,
 				"god/tpl",
 				"edit",
-				$this->ts("Gestion des templates"),
+				"",
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),

@@ -23,7 +23,7 @@
 			%{$lang_menu}%
 		</fieldset>
 	</div>
-	<form id="ctx-editor" action="%{link '/admin/system/god/lang/edit'}%?context=%{$ctx}%" method="POST">
+	<form id="ctx-editor" action="%{link '/admin/system/god/context/edit'}%?context=%{$ctx}%&back=%{$back}%" method="POST">
 		%{$inputs}%
 		<button type="submit" data-theme="b">%{@ 'Save all !'}%</button>
 	</form>

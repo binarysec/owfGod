@@ -1,10 +1,13 @@
 <?php
 
 
-class wfr_god_god_lang extends wf_route_request {
+class wfr_god_god_context extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
 	private $lang;
+	private $cipher;
+
+	public $back;
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 *
@@ -15,12 +18,14 @@ class wfr_god_god_lang extends wf_route_request {
 // 		$this->a_session = $this->wf->session();
 		$this->core_lang = $this->wf->core_lang();
 		$this->a_admin_html = $this->wf->admin_html();
+		$this->cipher = $this->wf->core_cipher();
 		
 		$this->ctx = $this->wf->get_var("context");
 		
 		$this->lang = $this->wf->core_lang()->get_context(
 			"admin/system/god"
 		);
+		$this->back = $this->cipher->get_var("back");
 	}
 	
 	public function show() {
@@ -29,6 +34,8 @@ class wfr_god_god_lang extends wf_route_request {
 		$modules_array = array();
 		foreach ($res as $k => $v){
 			$module = explode('/', $v['context']);
+			if($module[0] == "")
+				$module[0] = "/";
 			if(!array_key_exists($module[0], $modules_array)){
 				$modules_array[$module[0]] = true;
 				$res[] = array(
@@ -40,10 +47,15 @@ class wfr_god_god_lang extends wf_route_request {
 		}
 		usort($res, array($this, "cmp"));
 		$tpl->set("contexts", $res);
-		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god"));
+		
+		$here = $this->cipher->encode($_SERVER['REQUEST_URI']);
+		$tpl->set("back", $here);
+		$tpl->set("oldback", $this->wf->get_var("back"));
+		
+		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Context Edition"));
 		$this->a_admin_html->rendering(
-			$tpl->fetch('god/lang/index')
+			$tpl->fetch('god/context/index')
 		);
 	}
 	
@@ -51,10 +63,11 @@ class wfr_god_god_lang extends wf_route_request {
 		return(strcmp($a["context"], $b["context"]));
 	}
 
-	public function get_form(){
+	public function edit_form(){
+		
 		/*If no ctx is given, redirect to previous lang list */
 		if($this->ctx == NULL)
-			$this->wf->redirector($this->wf->linker('/admin/system/god/lang'));
+			$this->wf->redirector($this->back);
 			
 		$language = $this->core_lang->get_code();
 
@@ -122,22 +135,23 @@ class wfr_god_god_lang extends wf_route_request {
 		$tpl->set("language", $language);
 		$tpl->set("lang_menu", $lang_menu);
 		$tpl->set("inputs", $inputs);
+		$tpl->set("back", $this->wf->get_var("back"));
 		
-		$this->a_admin_html->set_backlink($this->wf->linker("/admin/system/god/lang"));
+		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Context Edition"));
 		$this->a_admin_html->rendering(
-			$tpl->fetch('god/lang/form')
+			$tpl->fetch('god/context/form')
 		);
 		exit(0);
 	}
 	
 	public function edit() {
 		if($this->ctx == NULL)
-			$this->wf->redirector($this->wf->linker('/admin/system/god/lang'));
+			$this->wf->redirector($this->back);
 			
 		$ts = $this->wf->get_var("ts");
 		if(!isset($ts) || !is_array($ts))
-			$this->wf->redirector($this->wf->linker('/admin/system/god/lang'));
+			$this->wf->redirector($this->back);
 		
 
 		/* get context */
@@ -171,11 +185,11 @@ class wfr_god_god_lang extends wf_route_request {
 			);
 			$cobj->wf = $this->wf;
 		}
-		
+
 		$request = $this->wf->core_request();
 		$request->set_header(
-			"Location", 
-			$this->wf->linker("/admin/system/god/lang")
+			"Location",
+			$this->back
 		);
 		$request->send_headers();
 		exit(0);
