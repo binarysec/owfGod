@@ -446,6 +446,24 @@ class core_lang extends wf_agg {
 			
 		return($res);
 	}
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 *
+	 * Clear all keys
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	public function god_clear_keys() {
+
+		/* try query */
+		$q = new core_db_delete("god_lang_keys", array());
+		$this->wf->db->query($q);
+
+		/* try query */
+		$q = new core_db_delete("god_lang_context", array());
+		$this->wf->db->query($q);
+		
+			
+		return(TRUE);
+	}
 	
 }
 

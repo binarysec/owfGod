@@ -177,12 +177,6 @@ class wfr_god_god_tpl extends wf_route_request {
 		/*Redirect user if the guy has access to this function without good values*/
 		if($this->ctx == NULL)
 			$this->wf->redirector($this->back);
-
-/*
-		echo '<pre>';
-		var_dump($this->back);
-		exit(0);
-*/
 			
 		$ts = $this->wf->get_var("ts");
 		if(!isset($ts) || !is_array($ts))

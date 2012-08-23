@@ -16,6 +16,10 @@
 		</li>
 	</ul>
 	
+	<form id="ctx-clearer" action="%{link '/admin/system/god/context/clear'}%?back=%{$back}%" method="POST">
+		<button type="submit" data-theme="f">%{@ 'Clear Database !'}%</button>
+	</form>
+	
 </div>
 
 <div class="content-primary">

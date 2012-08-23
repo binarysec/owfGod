@@ -47,6 +47,14 @@ class wfm_god extends wf_module {
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),
+			"/admin/system/god/context/clear" => array(
+				WF_ROUTE_ACTION,
+				"god/context",
+				"clear_context",
+				"Data",
+				WF_ROUTE_HIDE,
+				array("session:god")
+			),
 			
 			
 			"/admin/system/god/tpl" => array(
