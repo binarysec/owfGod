@@ -26,7 +26,7 @@
 			%{$lang_buttons}%
 		</fieldset>
 	</div>
-	<form id="tpl-editor" action="%{link '/admin/system/god/tpl/edit'}%?context=%{$ctx}%" method="POST">
+	<form id="tpl-editor" action="%{link '/admin/system/god/tpl/edit'}%?context=%{$ctx}%&back=%{$back}%" method="POST">
 		%{$textareas}%
 		<button type="submit" data-theme="b">%{@ 'Save all !'}%</button>
 	</form>
