@@ -19,7 +19,7 @@
 </div>
 
 <div class="content-primary">
-	<ul data-role="listview" data-inset="true">
+	<ul data-role="listview" data-inset="true" data-filter="true">
 		%{foreach $templates as $k => $v}%
 			%{if $v['divider'] == true}%
 				<li data-role="list-divider">
@@ -27,7 +27,7 @@
 				</li>
 			%{else}%
 
-				<li data-role="list-divider">
+				<li>
 					<a href="%{link '/admin/system/god/tpl/edit_tpl'}%?context=%{$v['id']}%&back=%{$back}%"><strong>%{$v['fetch']}%</strong></a>
 				</li>
 			%{/if}%

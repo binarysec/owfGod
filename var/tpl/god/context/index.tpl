@@ -19,14 +19,14 @@
 </div>
 
 <div class="content-primary">
-	<ul data-role="listview" data-inset="true">
+	<ul data-role="listview" data-inset="true" data-filter="true">
 		%{foreach $contexts as $k => $v}%
 			%{if $v['divider'] == true}%
 				<li data-role="list-divider">
 					<strong>%{$v['context']}%</strong>
 				</li>
 			%{else}%
-				<li data-role="list-divider">
+				<li>
 					<a href="%{link '/admin/system/god/context/edit_ctx'}%?context=%{$v['id']}%&back=%{$back}%"><strong>  %{$v['context']}% </strong></a>
 				</li>
 			%{/if}%

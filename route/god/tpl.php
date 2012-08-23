@@ -210,8 +210,13 @@ class wfr_god_god_tpl extends wf_route_request {
 		}
 
 		/*Edition is finished, back to edition of TPL*/
+/*
 		$locate = $this->wf->linker("/admin/system/god/tpl/edit_tpl")."?context=".$this->ctx;
+*/
+/*
 		header("Location: $locate");
+*/
+		header("Location: ".$this->back);
 		exit(0);
 	}
 	
