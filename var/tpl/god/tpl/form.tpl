@@ -6,6 +6,7 @@
 		$(".tpl-selector").click(function(){
 			$(".tpl-textareas").hide();
 			$("."+this.id).show();
+			$("textarea").keyup(); //Textarea autogrow
 		});
 	});
 </script>

@@ -121,8 +121,8 @@ class wfr_god_god_tpl extends wf_route_request {
 			$content = $this->tpl_content($res, $langs, $v["code"]);
 
 			$textareas .=
-				'<div class="tpl-textareas tpl-selector-'.$v["code"].'">'.
-					'<textarea id="god-textarea-'.$v["code"].'" name="ts['.$v["code"].'][data]" rows="30" style="width: 100%">'.
+				'<div data-role="fieldcontain" class="tpl-textareas tpl-selector-'.$v["code"].'">'.
+					'<textarea id="god-textarea-'.$v["code"].'" name="ts['.$v["code"].'][data]" rows="30" style="width: 100%;">'.
 						$content.
 					'</textarea>'.
 				'</div>';
