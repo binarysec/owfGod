@@ -21,7 +21,7 @@ class wfm_god extends wf_module {
 				"show",
 				$this->ts("Super god management"),
 				WF_ROUTE_SHOW,
-				array("admin:system"),
+				array("session:god"),
 			),
 			"/admin/system/god/context" => array(
 				WF_ROUTE_ACTION,
