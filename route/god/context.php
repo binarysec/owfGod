@@ -1,6 +1,5 @@
 <?php
 
-
 class wfr_god_god_context extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
@@ -73,7 +72,7 @@ class wfr_god_god_context extends wf_route_request {
 
 		/* get context */
 		$context = $this->core_lang->god_get("id", $this->ctx);
-		if(!is_array($context[0])) {
+		if(empty($context)) {
 			echo "<center>No data</center>";
 			exit(0);
 		}
@@ -112,18 +111,22 @@ class wfr_god_god_context extends wf_route_request {
 			/*Create inputs for all langs*/
 			$res[$v["code"]] = array();
 			foreach($keys as $key) {
-				$rk = base64_encode($key["key"]);
-				$res[$v["code"]][$rk] = 
-					html_entity_decode($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
+				if(!empty($key)) {
+					$rk = base64_encode($key["key"]);
+					$res[$v["code"]][$rk] = 
+						html_entity_decode($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
+					//next: $res[$v["code"]][$rk] = htmlentities($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
 
-				/*Create inputs for language edition*/
-				$inputs .=
-					'<input '.
-						'type="text" '.
-						'name="ts['.$v["code"].']['.$rk.']" '.
-						'value="'.$res[$v["code"]][$rk].'" '.
-						'class="lang-inputs lang-selector-'.$v["code"].'" '.
-					'/>';
+					/*Create inputs for language edition*/
+					if(!empty($res[$v["code"]][$rk]))
+						$inputs .=
+							'<input '.
+								'type="text" '.
+								'name="ts['.$v["code"].']['.$rk.']" '.
+								'value="'.$res[$v["code"]][$rk].'" '.
+								'class="lang-inputs lang-selector-'.$v["code"].'" '.
+							'/>';
+				}
 			}
 		}
 		
@@ -170,7 +173,7 @@ class wfr_god_god_context extends wf_route_request {
 			$lselect = &$l[$lang];
 			
 			foreach($values as $k => $v)
-				$cobj->change($k, htmlentities($v, ENT_COMPAT, $lselect["encoding"]));
+				$cobj->change($k, htmlentities($v, ENT_COMPAT, $lselect["encoding"])); //next: remove htmlentities
 				
 			
 			$file = $this->wf->locate_file($cobj->file);

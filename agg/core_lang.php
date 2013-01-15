@@ -196,7 +196,7 @@ class core_lang extends wf_agg {
 			return(FALSE);
 	
 		/* vérification si disponible */
-		if(!$this->available[$lang])
+		if(!isset($this->available[$lang]))
 			return(FALSE);
 		
 		/* passage des informations de contenu et d'encodage */
