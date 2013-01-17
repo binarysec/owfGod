@@ -169,7 +169,10 @@ class wfr_god_god_tpl extends wf_route_request {
 		
 		$lselect = &$langs[$language];
 		
-		return(htmlentities(file_get_contents($file), ENT_COMPAT, $lselect["encoding"]));
+		return file_exists($file) ?
+			htmlentities(file_get_contents($file), ENT_COMPAT, $lselect["encoding"]) :
+			null
+		;
 	}
 
 
