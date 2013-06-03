@@ -120,12 +120,11 @@ class wfr_god_god_context extends wf_route_request {
 					/*Create inputs for language edition*/
 					if(!empty($res[$v["code"]][$rk]))
 						$inputs .=
-							'<input '.
-								'type="text" '.
+							'<span class="lang-inputs lang-selector-'.$v["code"].'" >'.
+								'<input type="text" '.
 								'name="ts['.$v["code"].']['.$rk.']" '.
-								'value="'.$res[$v["code"]][$rk].'" '.
-								'class="lang-inputs lang-selector-'.$v["code"].'" '.
-							'/>';
+								'value="'.$res[$v["code"]][$rk].'" />'.
+							'</span>';
 				}
 			}
 		}
