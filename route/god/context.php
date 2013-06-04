@@ -175,7 +175,7 @@ class wfr_god_god_context extends wf_route_request {
 				$cobj->change($k, htmlentities($v, ENT_COMPAT, $lselect["encoding"])); //next: remove htmlentities
 				
 			
-			$file = $this->wf->locate_file($cobj->file);
+			$file = $this->wf->locate_file($cobj->file, false, "f");
 			if(!$file) 
 				$file = $this->wf->get_last_filename($cobj->file);
 			

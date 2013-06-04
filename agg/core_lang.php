@@ -271,7 +271,7 @@ class core_lang extends wf_agg {
 			$cid = $r[0]["id"];
 		
 		/* locate file */
-		$file = $this->wf->locate_file($full);
+		$file = $this->wf->locate_file($full, false, "f");
 		
 		/* if file exists try to unserialize it*/
 		if($file) {
