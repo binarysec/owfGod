@@ -100,6 +100,7 @@ class wfr_god_god_tpl extends wf_route_request {
 		$langs = $this->core_lang->get_list();
 		$lang_buttons = '';
 		$textareas = '';
+		$file_missing = false;
 		
 		foreach($langs as $v) {
 			$checked = '';
@@ -117,7 +118,14 @@ class wfr_god_god_tpl extends wf_route_request {
 					'value="'.$v["code"].'" '.
 				'/>'.
 				'<label for="tpl-selector-'.$v["code"].'">'.$v["name"].'</label>';
-
+			
+			/* check if file exists */
+			$file = $this->locate($res[0]["fetch"], $v["code"], true);
+			if($file)
+				$textareas .= "<span class='tpl-textareas tpl-selector-".$v["code"]."' >".$this->lang->ts("File located at ")."<strong>$file</strong></span>";
+			else
+				$file_missing = true;
+			
 			$content = $this->tpl_content($res, $langs, $v["code"]);
 
 			$textareas .=
@@ -136,6 +144,8 @@ class wfr_god_god_tpl extends wf_route_request {
 		$tpl->set("lang_buttons", $lang_buttons);
 		$tpl->set("textareas", $textareas);
 		$tpl->set("back", $this->wf->get_var("back"));
+		if($file_missing)
+			$tpl->set("modules", array_reverse($this->wf->modules, true));
 /*
 		$tpl->set("tinymce", $this->wf->mod_exists("ppTinyMCE"));
 */
@@ -235,8 +245,11 @@ class wfr_god_god_tpl extends wf_route_request {
 		}
 		
 		if($findbest) {
-			$file = $this->wf->get_last_filename($sdir.$tpl_name.'.tpl');
-			return($file);
+			$module = $this->wf->get_var("module");
+			if(isset($this->wf->modules[$module]))
+				return $this->wf->modules[$module][0].$sdir.$tpl_name.".tpl";
+			
+			return $this->wf->get_last_filename($sdir.$tpl_name.'.tpl');
 		}
 		
 		return(false);

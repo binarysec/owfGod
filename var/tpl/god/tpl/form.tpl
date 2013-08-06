@@ -29,6 +29,16 @@
 	</div>
 	<form id="tpl-editor" action="%{link '/admin/system/god/tpl/edit'}%?context=%{$ctx}%&back=%{$back}%" method="POST">
 		%{$textareas}%
+		%{if(isset($modules))}%
+			<div data-role="fieldcontain">
+				<label for="ctx-editor-module">%{@ "Save in this module :"}%</label>
+				<select id="ctx-editor-module" data-mini="true" data-native-menu="false" name="module">
+					%{foreach($modules as $name => $module)}%
+						<option value='%{$name}%'>%{$name}%</option>
+					%{/foreach}%
+				</select>
+			</div>
+		%{/if}%
 		<button type="submit" data-theme="b">%{@ 'Save all !'}%</button>
 	</form>
 </div>

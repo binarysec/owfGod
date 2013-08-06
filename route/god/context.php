@@ -6,6 +6,7 @@ class wfr_god_god_context extends wf_route_request {
 	private $lang;
 	private $cipher;
 
+	private $error = false;
 	public $back;
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -85,17 +86,13 @@ class wfr_god_god_context extends wf_route_request {
 		$res = array();
 		$inputs = '';
 		$lang_menu = '';
+		$file_missing = false;
 		
 		foreach($langs as $v) {
 			$checked = '';
 			
 			if($v["code"] == $language)
 				$checked = ' checked="checked" ';
-				
-			$cobj = $this->core_lang->get_context(
-				$context[0]["context"],
-				$v["code"]
-			);
 
 			/*Create buttons with langs*/
 			$lang_menu .=
@@ -107,7 +104,18 @@ class wfr_god_god_context extends wf_route_request {
 					'value="'.$v["code"].'" '.
 				'/>'.
 				'<label for="lang-selector-'.$v["code"].'">'.$v["name"].'</label>';
-
+			
+			/* check if file exists */
+			$cobj = $this->core_lang->get_context(
+				$context[0]["context"],
+				$v["code"]
+			);
+			$file = $this->wf->locate_file($cobj->file, false, "f");
+			if($file)
+				$inputs .= "<span class='lang-inputs lang-selector-".$v["code"]."' >".$this->lang->ts("File located at ")."<strong>$file</strong></span>";
+			else
+				$file_missing = true;
+			
 			/*Create inputs for all langs*/
 			$res[$v["code"]] = array();
 			foreach($keys as $key) {
@@ -116,15 +124,16 @@ class wfr_god_god_context extends wf_route_request {
 					$res[$v["code"]][$rk] = 
 						html_entity_decode($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
 					//next: $res[$v["code"]][$rk] = htmlentities($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
-
+					
 					/*Create inputs for language edition*/
-					if(!empty($res[$v["code"]][$rk]))
+					if(!empty($res[$v["code"]][$rk])) {
 						$inputs .=
 							'<span class="lang-inputs lang-selector-'.$v["code"].'" >'.
 								'<input type="text" '.
 								'name="ts['.$v["code"].']['.$rk.']" '.
 								'value="'.$res[$v["code"]][$rk].'" />'.
 							'</span>';
+					}
 				}
 			}
 		}
@@ -138,6 +147,9 @@ class wfr_god_god_context extends wf_route_request {
 		$tpl->set("lang_menu", $lang_menu);
 		$tpl->set("inputs", $inputs);
 		$tpl->set("back", $this->wf->get_var("back"));
+		$tpl->set("error", $this->error);
+		if($file_missing)
+			$tpl->set("modules", array_reverse($this->wf->modules, true));
 		
 		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Context Edition"));
@@ -176,10 +188,23 @@ class wfr_god_god_context extends wf_route_request {
 				
 			
 			$file = $this->wf->locate_file($cobj->file, false, "f");
+			
+			if(!$file) {
+				$module = $this->wf->get_var("module");
+				if(isset($this->wf->modules[$module]))
+					$file = $this->wf->modules[$module][0].'/'.$cobj->file;
+			}
+			
 			if(!$file) 
 				$file = $this->wf->get_last_filename($cobj->file);
 			
-			$this->wf->create_dir($file);
+			try {
+				$this->wf->create_dir($file);
+			}
+			catch(wf_exception $e) {
+				$this->error = $file;
+				$this->edit_form();
+			}
 
 			unset($cobj->wf);
 			file_put_contents(
