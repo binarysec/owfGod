@@ -24,6 +24,9 @@
 		</fieldset>
 	</div>
 	<form id="ctx-editor" action="%{link '/admin/system/god/context/edit'}%?context=%{$ctx}%&back=%{$back}%" method="POST">
+		%{if($error)}%
+			<div style="color: red;">%{@ "Permission issue to write file "}%<strong>%{$error}%</strong></div>
+		%{/if}%
 		%{$inputs}%
 		%{if(isset($modules))}%
 			<div data-role="fieldcontain">
@@ -34,9 +37,6 @@
 					%{/foreach}%
 				</select>
 			</div>
-		%{/if}%
-		%{if($error)}%
-			<div style="color: red;">%{@ "Permission issue to write file "}%<strong>%{$error}%</strong></div>
 		%{/if}%
 		<button type="submit" data-theme="b">%{@ 'Save all !'}%</button>
 	</form>

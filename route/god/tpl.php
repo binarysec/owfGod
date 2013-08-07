@@ -8,6 +8,7 @@ class wfr_god_god_tpl extends wf_route_request {
 	private $cipher;
 	public $ctx;
 	
+	private $error = false;
 	private $_god_tpl;
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -120,7 +121,7 @@ class wfr_god_god_tpl extends wf_route_request {
 				'<label for="tpl-selector-'.$v["code"].'">'.$v["name"].'</label>';
 			
 			/* check if file exists */
-			$file = $this->locate($res[0]["fetch"], $v["code"], true);
+			$file = $this->locate($res[0]["fetch"], $v["code"]);
 			if($file)
 				$textareas .= "<span class='tpl-textareas tpl-selector-".$v["code"]."' >".$this->lang->ts("File located at ")."<strong>$file</strong></span>";
 			else
@@ -144,6 +145,7 @@ class wfr_god_god_tpl extends wf_route_request {
 		$tpl->set("lang_buttons", $lang_buttons);
 		$tpl->set("textareas", $textareas);
 		$tpl->set("back", $this->wf->get_var("back"));
+		$tpl->set("error", $this->error);
 		if($file_missing)
 			$tpl->set("modules", array_reverse($this->wf->modules, true));
 /*
@@ -155,6 +157,7 @@ class wfr_god_god_tpl extends wf_route_request {
 		$this->a_admin_html->rendering(
 			$tpl->fetch('god/tpl/form')
 		);
+		exit(0);
 	}
 
 	private function tpl_content(&$res, $langs, $language) {	
@@ -218,7 +221,14 @@ class wfr_god_god_tpl extends wf_route_request {
 				echo "<center>TPL File not found</center>";
 				exit(0);
 			}
-			$this->wf->create_dir($file);
+			
+			try {
+				$this->wf->create_dir($file);
+			}
+			catch(wf_exception $e) {
+				$this->error = $file;
+				$this->edit_tpl();
+			}
 			
 			file_put_contents($file, $data);
 		}

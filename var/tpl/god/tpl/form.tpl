@@ -28,6 +28,9 @@
 		</fieldset>
 	</div>
 	<form id="tpl-editor" action="%{link '/admin/system/god/tpl/edit'}%?context=%{$ctx}%&back=%{$back}%" method="POST">
+		%{if($error)}%
+			<div style="color: red;">%{@ "Permission issue to write file "}%<strong>%{$error}%</strong></div>
+		%{/if}%
 		%{$textareas}%
 		%{if(isset($modules))}%
 			<div data-role="fieldcontain">
