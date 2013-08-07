@@ -1,6 +1,5 @@
 <?php
 
-
 class wfr_god_god_tpl extends wf_route_request {
 	private $a_admin_html;
 	private $core_lang;
@@ -34,7 +33,6 @@ class wfr_god_god_tpl extends wf_route_request {
 	}
 	
 	public function show() {
-
 		$res = $this->_god_tpl->search();
 		
 		for($a=0; $a<count($res); $a++) {
@@ -76,9 +74,7 @@ class wfr_god_god_tpl extends wf_route_request {
 		
 		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Template Edition"));
-		$this->a_admin_html->rendering(
-			$tpl->fetch('god/tpl/index')
-		);
+		$this->a_admin_html->rendering($tpl->fetch('god/tpl/index'));
 	}
 
 	public function cmp($a, $b) {
@@ -148,15 +144,11 @@ class wfr_god_god_tpl extends wf_route_request {
 		$tpl->set("error", $this->error);
 		if($file_missing)
 			$tpl->set("modules", array_reverse($this->wf->modules, true));
-/*
-		$tpl->set("tinymce", $this->wf->mod_exists("ppTinyMCE"));
-*/
+		//$tpl->set("tinymce", $this->wf->mod_exists("ppTinyMCE"));
 		
 		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Template Edition"));
-		$this->a_admin_html->rendering(
-			$tpl->fetch('god/tpl/form')
-		);
+		$this->a_admin_html->rendering($tpl->fetch('god/tpl/form'));
 		exit(0);
 	}
 
@@ -187,33 +179,27 @@ class wfr_god_god_tpl extends wf_route_request {
 			null
 		;
 	}
-
-
+	
 	public function edit(){
 		/*Redirect user if the guy has access to this function without good values*/
 		if($this->ctx == NULL)
 			$this->wf->redirector($this->back);
-			
+		
 		$ts = $this->wf->get_var("ts");
 		if(!isset($ts) || !is_array($ts))
 			$this->wf->redirector($this->back);
-
-
+		
 		$res = $this->_god_tpl->search(array("id" => $this->ctx));
 		if(count($res) <= 0) {
 			echo "<center>No data</center>";
 			exit(0);
 		}
-
 		$info = &$res[0];
 		$l = $this->core_lang->get_list();
 		
-
 		foreach($ts as $lang => $data) {
-			if(!array_key_exists($lang, $l)){
+			if(!array_key_exists($lang, $l))
 				$this->wf->redirector($this->back);
-				exit(0);
-			}
 			
 			/*Locate the appropriate file for putting data content */
 			$file = $this->locate($info["fetch"], $lang, true);
@@ -244,12 +230,9 @@ class wfr_god_god_tpl extends wf_route_request {
 	
 		$modrev = array_reverse($this->wf->modules);
 		foreach($modrev as $mod => $mod_infos) {
-			$tmp = $this->wf->modules[$mod][0].
-				$sdir.$tpl_name.'.tpl';
-			if(file_exists($tmp)) {
-
-				return($tmp);
-			}
+			$tmp = $this->wf->modules[$mod][0].$sdir.$tpl_name.'.tpl';
+			if(file_exists($tmp))
+				return $tmp;
 		}
 		
 		if($findbest) {
@@ -260,9 +243,6 @@ class wfr_god_god_tpl extends wf_route_request {
 			return $this->wf->get_last_filename($sdir.$tpl_name.'.tpl');
 		}
 		
-		return(false);
+		return false;
 	}
-	
-	
-	
 }

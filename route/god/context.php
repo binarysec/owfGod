@@ -54,9 +54,7 @@ class wfr_god_god_context extends wf_route_request {
 		
 		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Context Edition"));
-		$this->a_admin_html->rendering(
-			$tpl->fetch('god/context/index')
-		);
+		$this->a_admin_html->rendering($tpl->fetch('god/context/index'));
 	}
 	
 	public function cmp($a, $b) {
@@ -121,9 +119,9 @@ class wfr_god_god_context extends wf_route_request {
 			foreach($keys as $key) {
 				if(!empty($key)) {
 					$rk = base64_encode($key["key"]);
-					$res[$v["code"]][$rk] = 
-						html_entity_decode($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
-					//next: $res[$v["code"]][$rk] = htmlentities($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
+					$tmp = html_entity_decode($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
+					$res[$v["code"]][$rk] = htmlentities($tmp, ENT_COMPAT, $v["encoding"]);
+					// at the end just keep this : $res[$v["code"]][$rk] = htmlentities($cobj->ts($key["key"]), ENT_COMPAT, $v["encoding"]);
 					
 					/*Create inputs for language edition*/
 					if(!empty($res[$v["code"]][$rk])) {
@@ -153,21 +151,18 @@ class wfr_god_god_context extends wf_route_request {
 		
 		$this->a_admin_html->set_backlink($this->back);
 		$this->a_admin_html->set_title($this->lang->ts("Context Edition"));
-		$this->a_admin_html->rendering(
-			$tpl->fetch('god/context/form')
-		);
+		$this->a_admin_html->rendering($tpl->fetch('god/context/form'));
 		exit(0);
 	}
 	
 	public function edit() {
 		if($this->ctx == NULL)
 			$this->wf->redirector($this->back);
-			
+		
 		$ts = $this->wf->get_var("ts");
 		if(!isset($ts) || !is_array($ts))
 			$this->wf->redirector($this->back);
 		
-
 		/* get context */
 		$context = $this->core_lang->god_get("id", $this->ctx);
 		if(!is_array($context[0])) 
@@ -184,7 +179,8 @@ class wfr_god_god_context extends wf_route_request {
 			$lselect = &$l[$lang];
 			
 			foreach($values as $k => $v)
-				$cobj->change($k, htmlentities($v, ENT_COMPAT, $lselect["encoding"])); //next: remove htmlentities
+				$cobj->change($k, $v);
+				//$cobj->change($k, htmlentities($v, ENT_COMPAT, $lselect["encoding"]));
 				
 			
 			$file = $this->wf->locate_file($cobj->file, false, "f");
