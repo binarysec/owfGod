@@ -213,27 +213,14 @@ class wfr_god_god_context extends wf_route_request {
 			);
 			$cobj->wf = $this->wf;
 		}
-
-		$request = $this->wf->core_request();
-		$request->set_header(
-			"Location",
-			$this->back
-		);
-		$request->send_headers();
-		exit(0);
+		
+		$this->wf->redirector($this->back);
 	}
 
 	/* Route used to remove every contexts and keys from Database*/
 	public function clear_context() {
 		$this->core_lang->god_clear_keys();
-
-		$request = $this->wf->core_request();
-		$request->set_header(
-			"Location",
-			$this->back
-		);
-		$request->send_headers();
-		exit(0);
+		$this->wf->redirector($this->back);
 	}
 	
 }

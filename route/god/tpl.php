@@ -232,10 +232,8 @@ class wfr_god_god_tpl extends wf_route_request {
 			
 			file_put_contents($file, $data);
 		}
-
-		/*Edition is finished, back to Template list*/		
-		header("Location: ".$this->back);
-		exit(0);
+		
+		$this->wf->redirector($this->back);
 	}
 	
 	public function locate($tpl_name, $lang=null, $findbest=false) {
