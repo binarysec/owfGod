@@ -21,7 +21,6 @@ class core_lang_context {
 		$this->full = $full;
 		$this->file = $file;
 		$this->cid = $cid;
-		
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -29,21 +28,20 @@ class core_lang_context {
 	 * Translation function
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function ts($text) {
-		
 		if(is_array($text)) {
-			$rtext = $text[0];
-			$this->god_register_key($rtext);
-			unset($text[0]);
-			$res = vsprintf(
-				$this->get_translation($rtext), 
-				$text
-			);
-			return($res);
+			$rtext = array_shift($text);
+			if(!is_string($rtext))
+				return false;
+			
+			$rtext = $this->ts($rtext);
+			return vsprintf($rtext, $text);
+		}
+		elseif(strlen($text) > 0) {
+			$this->god_register_key($text);
+			return $this->get_translation($text);
 		}
 		else
-			$this->god_register_key($text);
-		
-		return($this->get_translation($text));
+			return $text;
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -52,15 +50,15 @@ class core_lang_context {
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function change($key, $value) {
 		$this->keys[$key] = $value;
-		return(TRUE);
+		return true;
 	}
-
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 *
 	 * Used to read 
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function get($key) {
-		return($this->keys[$key]);
+		return $this->keys[$key];
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -75,7 +73,7 @@ class core_lang_context {
 			$ktext = $text;
 			$this->rewrite = TRUE;
 		}
-		return($ktext);
+		return $ktext;
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -83,33 +81,31 @@ class core_lang_context {
 	 * got get key
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	public function god_register_key($key) {
-		/* register the module */
-		$r = $this->god_get_keys("key", $key);
-		if(!isset($r[0]) || !is_array($r[0])) {
-			/* input */
+		/* add to database if do not exists */
+		$r = current($this->god_get_keys("key", $key));
+		if(!$r) {
 			$insert = array(
 				"create_t" => time(),
 				"context_id" => $this->cid,
 				"key" => $key
 			);
-	
+			
 			/* sinon on ajoute l'utilisateur */
 			$q = new core_db_insert("god_lang_keys", $insert);
 			$this->wf->db->query($q);
 		}
-		return(true);
+		
+		return true;
 	}
-	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 *
 	 * got get key
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	public function god_get_keys($conds, $extra=NULL) {
-		if(is_array($conds))
-			$where = $conds;
-		else
-			$where = array($conds => $extra);
+	public function god_get_keys($conds, $extra = null) {
+		/* build where array */
+		$where = is_array($conds) ?
+			$conds : array($conds => $extra);
 		$where["context_id"] = $this->cid;
 		
 		/* create cache line */
@@ -118,9 +114,9 @@ class core_lang_context {
 			$cl .= "_$k:$v";
 		
 		/* get cache */
-		if(($cache = $this->wf->core_cacher()->get($cl)))
-			return($cache);
-			
+		if($cache = $this->wf->core_cacher()->get($cl))
+			return $cache;
+		
 		/* try query */
 		$q = new core_db_select("god_lang_keys");
 		$q->where($where);
@@ -130,10 +126,8 @@ class core_lang_context {
 		/* store cache */
 		$this->wf->core_cacher()->store($cl, $res);
 		
-		return($res);
+		return $res;
 	}
-	
-
 }
 
 class core_lang extends wf_agg {
