@@ -82,8 +82,8 @@ class wfr_god_god_context extends wf_route_request {
 
 		/* create result */
 		$res = array();
-		$inputs = '';
 		$lang_menu = '';
+		$inputs = '';
 		$file_missing = false;
 		
 		foreach($langs as $v) {
@@ -133,6 +133,18 @@ class wfr_god_god_context extends wf_route_request {
 							'</span>';
 					}
 				}
+			}
+		}
+		
+		/* append a way to see keys */
+		$lang_menu .= '<input type="radio" name="lang-selector" class="lang-selector" id="lang-selector-keys" data-theme="a" /><label for="lang-selector-keys">'.$this->lang->ts("Keys").'</label>';
+		$inputs .= "<span class='lang-inputs lang-selector-keys'>".$this->lang->ts("Those are internal keys used in the code. They are displayed for the file import feature.")."</span>";
+		foreach($keys as $key) {
+			if(!empty($key)) {
+				$inputs .=
+					'<span class="lang-inputs lang-selector-keys" >'.
+						'<input type="text" value="'.htmlentities($key["key"]).'" readonly=readonly />'.
+					'</span>';
 			}
 		}
 		

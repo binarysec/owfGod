@@ -23,6 +23,8 @@ class wfm_god extends wf_module {
 				WF_ROUTE_SHOW,
 				array("session:god"),
 			),
+			
+			/* contexts */
 			"/admin/system/god/context" => array(
 				WF_ROUTE_ACTION,
 				"god/context",
@@ -56,7 +58,7 @@ class wfm_god extends wf_module {
 				array("session:god")
 			),
 			
-			
+			/* tpl edition */
 			"/admin/system/god/tpl" => array(
 				WF_ROUTE_ACTION,
 				"god/tpl",
@@ -77,6 +79,16 @@ class wfm_god extends wf_module {
 				WF_ROUTE_ACTION,
 				"god/tpl",
 				"edit",
+				"",
+				WF_ROUTE_HIDE,
+				array("session:god")
+			),
+			
+			/* import from csv */
+			"/admin/system/god/import" => array(
+				WF_ROUTE_ACTION,
+				"god/main",
+				"import",
 				"",
 				WF_ROUTE_HIDE,
 				array("session:god")
