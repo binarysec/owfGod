@@ -15,6 +15,52 @@ class wfr_god_god_main extends wf_route_request {
 		$this->back = $this->cipher->get_var("back");
 	}
 	
+	public function export() {
+		
+		$data = array();
+		
+		$langs = array("lang");
+		$l = $this->core_lang->get_list();
+		foreach($l as $k => $v)
+			$langs[] = $k;
+		
+		$data[] = $langs;
+		
+		$q = new core_db_select("god_lang_context");
+		$q->order(array("context" => WF_ASC));
+		$this->wf->db->query($q);
+		$ctxs = $q->get_result();
+		
+		foreach($ctxs as $ctx_info) {
+			
+			$data[] = array($ctx_info["context"]);
+			$ctx = $this->core_lang->get_context($ctx_info["context"]);
+			$keys = $ctx->god_get_keys(array());
+			
+			foreach($keys as $key_info) {
+				$row = array($key_info["key"]);
+				
+				foreach($data[0] as $lang) {
+					if($lang != "lang") {
+						$cobj = $this->core_lang->get_context($ctx_info["context"], $lang);
+						$row[] = $cobj->ts($key_info["key"]);
+					}
+				}
+				
+				$data[] = $row;
+			}
+		}
+		
+		$csv = new core_csv($this->wf);
+		$csv->load($data);
+		header("Content-type: text/csv");
+		header("Content-Disposition: attachment; filename=Traductions.csv");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		$csv->save("php://output");
+		exit(0);
+	}
+	
 	public function import() {
 		
 		$errors = array();
@@ -85,26 +131,26 @@ class wfr_god_god_main extends wf_route_request {
 								if(isset($langs[$i])) {
 									$cobj = $this->core_lang->get_context($context, $langs[$i]);
 									
+									$file = $this->wf->locate_file($cobj->file, false, "f");
+									
 									$exists = array_key_exists(base64_encode($key), $cobj->keys);
 									
-									if($exists) {
-										$cobj->change($key, $ts);
-										
-										$file = $this->wf->locate_file($cobj->file, false, "f");
-										
-										if($file) {
-											if(is_writable($file)) {
+									if($file) {
+										if(is_writable($file)) {
+											if($exists) {
+												$cobj->change($key, $ts);
+												
 												unset($cobj->wf);
 												file_put_contents($file, serialize($cobj));
 											}
 											else
-												$this->_err($errors, htmlentities($context), "File <i>".$file."</i> is not writable.");
+												$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> does not exists in that context.");
 										}
 										else
-											$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i>, value <i>".htmlentities($ts)."</i> : file <i>".$file."</i> not found, please create file first.");
+											$this->_err($errors, htmlentities($context), "File <i>".$file."</i> is not writable.");
 									}
 									else
-										$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> does not exists in that context.");
+										$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i>, value <i>".htmlentities($ts)."</i> : file <i>".$file."</i> not found, please create file first.");
 								}
 								else
 									$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> has field <i>".htmlentities($ts)."</i> out of bounds.");
@@ -116,8 +162,7 @@ class wfr_god_god_main extends wf_route_request {
 					
 					/* otherwise this is a context switch */
 					else {
-						$ctx = strtolower($key);
-						$ret = current($this->core_lang->god_get("context", $ctx));
+						$ret = current($this->core_lang->god_get("context", $key));
 						
 						if($ret)
 							$context = $ret["context"];

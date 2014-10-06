@@ -15,6 +15,11 @@
 			<a id="button2" name="button" data-transition="fade" data-role="button" href="%{link '/admin/system/god/tpl'}%?back=%{$oldback}%">%{@ 'Templates'}%</a>
 		</li>
 		<li>
+			<a href="%{link '/admin/system/god/export'}%?back=%{$back}%" data-transition="fade" data-role="button" data-theme="a" data-ajax="false">
+				%{@ 'Export'}%
+			</a>
+		</li>
+		<li>
 			<a href="#god-import-csv" data-rel="popup" data-position-to="window" data-role="button" data-inline="true" data-theme="a" data-transition="pop">
 				%{@ 'Import'}%
 			</a>

@@ -93,6 +93,14 @@ class wfm_god extends wf_module {
 				WF_ROUTE_HIDE,
 				array("session:god")
 			),
+			"/admin/system/god/export" => array(
+				WF_ROUTE_ACTION,
+				"god/main",
+				"export",
+				"",
+				WF_ROUTE_HIDE,
+				array("session:god")
+			),
 		));
 	}
 	
