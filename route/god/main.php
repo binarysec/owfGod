@@ -133,24 +133,35 @@ class wfr_god_god_main extends wf_route_request {
 									
 									$file = $this->wf->locate_file($cobj->file, false, "f");
 									
-									$exists = array_key_exists(base64_encode($key), $cobj->keys);
-									
 									if($file) {
 										if(is_writable($file)) {
+											
+											$exists = array_key_exists(base64_encode($key), $cobj->keys);
+											
+											if(!$exists)
+												$exists = $cobj->god_get_keys("key", $key);
+											
 											if($exists) {
-												$cobj->change($key, $ts);
+												$cobj->change(base64_encode($key), $ts);
 												
 												unset($cobj->wf);
 												file_put_contents($file, serialize($cobj));
+												$cobj->wf = $this->wf;
 											}
-											else
+											else {
 												$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> does not exists in that context.");
+												break;
+											}
 										}
-										else
+										else {
 											$this->_err($errors, htmlentities($context), "File <i>".$file."</i> is not writable.");
+											break;
+										}
 									}
-									else
+									else {
 										$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i>, value <i>".htmlentities($ts)."</i> : file <i>".$file."</i> not found, please create file first.");
+										break;
+									}
 								}
 								else
 									$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> has field <i>".htmlentities($ts)."</i> out of bounds.");
