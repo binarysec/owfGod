@@ -162,7 +162,7 @@ class wfr_god_god_main extends wf_route_request {
 											}
 										}
 										else {
-											$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i>, value <i>".htmlentities($ts)."</i> : file <i>".$file."</i> not found, please create file first.");
+											$this->_err($errors, htmlentities($context), "File <i>".$cobj->file."</i> not found, please create file first.");
 											$context_error = true;
 											break;
 										}
