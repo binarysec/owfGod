@@ -89,6 +89,7 @@ class wfr_god_god_main extends wf_route_request {
 		/* vars */
 		$errors = array();
 		$context = null;
+		$context_error = false;
 		
 		/* langs */
 		$langs = array();
@@ -126,46 +127,50 @@ class wfr_god_god_main extends wf_route_request {
 					/* if lines has more than 1 element, this if for traduction */
 					if(count($vf) > 1) {
 						if($context) {
-							while($ts = next($vf)) {
-								$i = key($vf);
-								if(isset($langs[$i])) {
-									$cobj = $this->core_lang->get_context($context, $langs[$i]);
-									
-									$file = $this->wf->locate_file($cobj->file, false, "f");
-									
-									if($file) {
-										if(is_writable($file)) {
-											
-											$exists = array_key_exists(base64_encode($key), $cobj->keys);
-											
-											if(!$exists)
-												$exists = $cobj->god_get_keys("key", $key);
-											
-											if($exists) {
-												$cobj->change(base64_encode($key), $ts);
+							if(!$context_error) {
+								while($ts = next($vf)) {
+									$i = key($vf);
+									if(isset($langs[$i])) {
+										$cobj = $this->core_lang->get_context($context, $langs[$i]);
+										
+										$file = $this->wf->locate_file($cobj->file, false, "f");
+										
+										if($file) {
+											if(is_writable($file)) {
 												
-												unset($cobj->wf);
-												file_put_contents($file, serialize($cobj));
-												$cobj->wf = $this->wf;
+												$exists = array_key_exists(base64_encode($key), $cobj->keys);
+												
+												if(!$exists)
+													$exists = $cobj->god_get_keys("key", $key);
+												
+												if($exists) {
+													$cobj->change(base64_encode($key), $ts);
+													
+													unset($cobj->wf);
+													file_put_contents($file, serialize($cobj));
+													$cobj->wf = $this->wf;
+												}
+												else {
+													$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> does not exists in that context.");
+													break;
+												}
 											}
 											else {
-												$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> does not exists in that context.");
+												$this->_err($errors, htmlentities($context), "File <i>".$file."</i> is not writable.");
+												$context_error = true;
 												break;
 											}
 										}
 										else {
-											$this->_err($errors, htmlentities($context), "File <i>".$file."</i> is not writable.");
+											$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i>, value <i>".htmlentities($ts)."</i> : file <i>".$file."</i> not found, please create file first.");
+											$context_error = true;
 											break;
 										}
 									}
-									else {
-										$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i>, value <i>".htmlentities($ts)."</i> : file <i>".$file."</i> not found, please create file first.");
-										break;
-									}
-								}
-								else
-									$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> has field <i>".htmlentities($ts)."</i> out of bounds.");
-							};
+									else
+										$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> has field <i>".htmlentities($ts)."</i> out of bounds.");
+								};
+							}
 						}
 						else
 							$this->_err($errors, "general", "Key <i>".htmlentities($key)."</i> was not under a context.");
@@ -175,8 +180,10 @@ class wfr_god_god_main extends wf_route_request {
 					else {
 						$ret = current($this->core_lang->god_get("context", $key));
 						
-						if($ret)
+						if($ret) {
 							$context = $ret["context"];
+							$context_error = false;
+						}
 						else
 							$this->_err($errors, "general", "Context <i>".htmlentities($key)."</i> was not found in the database.");
 					}
