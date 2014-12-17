@@ -90,6 +90,7 @@ class wfr_god_god_main extends wf_route_request {
 		$errors = array();
 		$context = null;
 		$context_error = false;
+		$context_keys_file = $context_keys = null;
 		
 		/* langs */
 		$langs = array();
@@ -149,6 +150,9 @@ class wfr_god_god_main extends wf_route_request {
 													unset($cobj->wf);
 													file_put_contents($file, serialize($cobj));
 													$cobj->wf = $this->wf;
+													
+													unset($context_keys[$key]);
+													unset($context_keys_file[$key]);
 												}
 												else {
 													$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> does not exists in that context.");
@@ -178,16 +182,52 @@ class wfr_god_god_main extends wf_route_request {
 					
 					/* otherwise this is a context switch */
 					else {
+						
 						$ret = current($this->core_lang->god_get("context", $key));
 						
 						if($ret) {
+							if($context_keys && !empty($context_keys) && !$context_error)
+								$this->_err($errors, htmlentities($context), 'Those keys were not translated : <br/><small style="font-weight: normal;">'.implode("<br/>", $context_keys).'</small>');
+							if($context_keys_file && !empty($context_keys_file) && !$context_error) {
+								$erret = array();
+								foreach($context_keys_file as $key)
+									if(!isset($context_keys[$key]))
+										$erret[] = $key;
+								if(!empty($erret))
+									$this->_err($errors, htmlentities($context), 'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">'.implode("<br/>", $erret).'</small>');
+							}
+							
 							$context = $ret["context"];
 							$context_error = false;
+							$context_keys_file = $context_keys = array();
+							
+							$cobj = $this->core_lang->get_context($context);
+							if($cobj) {
+								$keys = $cobj->god_get_keys(array());
+								foreach($keys as $key_data)
+									$context_keys[$key_data["key"]] = $key_data["key"];
+								foreach($cobj->keys as $b64 => $ts) {
+									$key = base64_decode($b64);
+									$context_keys_file[$key] = $key;
+								}
+							}
 						}
 						else
 							$this->_err($errors, "general", "Context <i>".htmlentities($key)."</i> was not found in the database.");
 					}
 				}
+			}
+		}
+		
+		if($context) {
+			if($context_keys && !empty($context_keys) && !$context_error)
+				$this->_err($errors, htmlentities($context), 'Those keys were not translated : <br/><small style="font-weight: normal;">'.implode("<br/>", $context_keys).'</small>');
+			if($context_keys_file && !empty($context_keys_file) && !$context_error) {
+				$ret = array();
+				foreach($context_keys_file as $key)
+					if(!isset($context_keys[$key]))
+						$ret[] = $key;
+				$this->_err($errors, htmlentities($context), 'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">'.implode("<br/>", $ret).'</small>');
 			}
 		}
 		
