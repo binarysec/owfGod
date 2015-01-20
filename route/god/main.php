@@ -194,7 +194,8 @@ class wfr_god_god_main extends wf_route_request {
 									if(!isset($context_keys[$key]))
 										$erret[] = $key;
 								if(!empty($erret))
-									$this->_err($errors, htmlentities($context), 'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">'.implode("<br/>", $erret).'</small>');
+									$this->_err($errors, htmlentities($context), 'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">'.
+										htmlentities(implode("<br/>", $erret)).'</small>');
 							}
 							
 							$context = $ret["context"];
