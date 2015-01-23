@@ -155,29 +155,29 @@ class wfr_god_god_main extends wf_route_request {
 													unset($context_keys_file[$key]);
 												}
 												else {
-													$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> does not exists in that context.");
+													$this->_err($errors, htmlentities($context), "Key \"<i>".htmlentities($key)."</i>\" does not exists in that context.");
 													break;
 												}
 											}
 											else {
-												$this->_err($errors, htmlentities($context), "File <i>".$file."</i> is not writable.");
+												$this->_err($errors, htmlentities($context), "File \"<i>".$file."</i>\" is not writable.");
 												$context_error = true;
 												break;
 											}
 										}
 										else {
-											$this->_err($errors, htmlentities($context), "File <i>".$cobj->file."</i> not found, please create file first.");
+											$this->_err($errors, htmlentities($context), "File \"<i>".$cobj->file."</i>\" not found, please create file first.");
 											$context_error = true;
 											break;
 										}
 									}
 									else
-										$this->_err($errors, htmlentities($context), "Key <i>".htmlentities($key)."</i> has field <i>".htmlentities($ts)."</i> out of bounds.");
+										$this->_err($errors, htmlentities($context), "Key \"<i>".htmlentities($key)."</i>\" has field \"<i>".htmlentities($ts)."</i>\" out of bounds.");
 								};
 							}
 						}
 						else
-							$this->_err($errors, "general", "Key <i>".htmlentities($key)."</i> was not under a context.");
+							$this->_err($errors, "general", "Key \"<i>".htmlentities($key)."</i>\" was not under a context.");
 					}
 					
 					/* otherwise this is a context switch */
@@ -187,15 +187,23 @@ class wfr_god_god_main extends wf_route_request {
 						
 						if($ret) {
 							if($context_keys && !empty($context_keys) && !$context_error)
-								$this->_err($errors, htmlentities($context), 'Those keys were not translated : <br/><small style="font-weight: normal;">'.implode("<br/>", $context_keys).'</small>');
+								$this->_err(
+									$errors,
+									htmlentities($context),
+									'Those keys were not translated : <br/><small style="font-weight: normal;">\"'.nl2br(htmlentities(implode("\"\n\"", $context_keys))).'\"</small>'
+								);
+							
 							if($context_keys_file && !empty($context_keys_file) && !$context_error) {
 								$erret = array();
 								foreach($context_keys_file as $key)
 									if(!isset($context_keys[$key]))
 										$erret[] = $key;
 								if(!empty($erret))
-									$this->_err($errors, htmlentities($context), 'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">'.
-										htmlentities(implode("<br/>", $erret)).'</small>');
+									$this->_err(
+										$errors,
+										htmlentities($context),
+										'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">\"'.nl2br(htmlentities(implode("\"\n\"", $erret)).'\"</small>'
+									);
 							}
 							
 							$context = $ret["context"];
