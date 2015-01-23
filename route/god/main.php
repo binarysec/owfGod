@@ -190,7 +190,7 @@ class wfr_god_god_main extends wf_route_request {
 								$this->_err(
 									$errors,
 									htmlentities($context),
-									'Those keys were not translated : <br/><small style="font-weight: normal;">\"'.nl2br(htmlentities(implode("\"\n\"", $context_keys))).'\"</small>'
+									'Those keys were not translated : <br/><small style="font-weight: normal;">"'.nl2br(htmlentities(implode("\"\n\"", $context_keys))).'"</small>'
 								);
 							
 							if($context_keys_file && !empty($context_keys_file) && !$context_error) {
@@ -202,7 +202,7 @@ class wfr_god_god_main extends wf_route_request {
 									$this->_err(
 										$errors,
 										htmlentities($context),
-										'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">\"'.nl2br(htmlentities(implode("\"\n\"", $erret))).'\"</small>'
+										'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">"'.nl2br(htmlentities(implode("\"\n\"", $erret))).'"</small>'
 									);
 							}
 							
