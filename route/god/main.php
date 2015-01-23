@@ -202,7 +202,7 @@ class wfr_god_god_main extends wf_route_request {
 									$this->_err(
 										$errors,
 										htmlentities($context),
-										'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">\"'.nl2br(htmlentities(implode("\"\n\"", $erret)).'\"</small>'
+										'Those keys are in the file but not in the database : <br/><small style="font-weight: normal;">\"'.nl2br(htmlentities(implode("\"\n\"", $erret))).'\"</small>'
 									);
 							}
 							
